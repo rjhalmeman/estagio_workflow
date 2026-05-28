@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extrator de Plano de Estágio</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+
+        input[type="file"] {
+            margin-bottom: 20px;
+        }
+
+        pre {
+            background: #f4f4f4;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+
+        .btn {
+            padding: 10px 15px;
+            background: #0056b3;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .btn:hover {
+            background: #004494;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h2>Upload de Plano de Estágio (PDF)</h2>
+        <input type="file" id="pdfInput" accept="application/pdf">
+        <button class="btn" onclick="processPDF()">Extrair Dados</button>
+
+        <h3>Dados Extraídos:</h3>
+        <pre id="outputDados">Aguardando arquivo...</pre>
+
+        <h3>Query SQL Gerada:</h3>
+        <pre id="outputSQL">Aguardando extração...</pre>
+    </div>
+
+    <script>
+        // Configurando o worker do PDF.js
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+
+        async function processPDF() {
+            const fileInput = document.getElementById('pdfInput');
+            if (fileInput.files.length === 0) {
+                alert('Por favor, selecione um arquivo PDF.');
+                return;
+            }
+
+            const file = fileInput.files[0];
+            const arrayBuffer = await file.arrayBuffer();
+            const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+
+            let fullText = '';
+            // Lendo todas as páginas do PDF
+            for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+                const page = await pdf.getPage(pageNum);
+                const textContent = await page.getTextContent();
+                const pageText = textContent.items.map(item => item.str).join(' ');
+                fullText += pageText + ' ';
+            }
+
+            extractData(fullText);
+        }
+
+        function extractData(text) {
+            // Expressões regulares baseadas na estrutura padrão do documento UTFPR
+            const patterns = {
+                aluno_nome: /Nome:\s*([A-Za-zÀ-ÿ\s]+?)\s*Curso:/i,
+                aluno_matricula: /Matr[íi]cula:\s*(\d+)/i,
+                aluno_curso: /Curso:\s*([A-Za-zÀ-ÿ\s]+?)\s*Per[íi]odo:/i,
+                empresa_nome: /Denomina[çc][ãa]o:\s*([A-Za-zÀ-ÿ\s\-\w]+?)\s*CNPJ:/i,
+                empresa_cnpj: /CNPJ:\s*([\d\.\-\/]+)/i,
+                data_inicio: /Per[íi]odo de est[áa]gio:\s*([\d]{2}\/[\d]{2}\/[\d]{4})/i,
+                data_termino: /a\s*([\d]{2}\/[\d]{2}\/[\d]{4})/i, // Captura a data logo após o 'a' do período
+                carga_horaria: /Carga hor[áa]ria total do est[áa]gio obrigat[óo]rio:\s*(\d+)\s*horas/i
+            };
+
+            const extracted = {};
+            for (const [key, regex] of Object.entries(patterns)) {
+                const match = text.match(regex);
+                extracted[key] = match ? match[1].trim() : 'Não encontrado';
+            }
+
+            // Determinar tipo de estágio de forma simplificada
+            extracted.tipo_estagio = text.includes('(X) Estágio curricular obrigatório') ? 'Obrigatório' : 'Não Obrigatório';
+
+            // Mostra o JSON extraído na tela
+            document.getElementById('outputDados').innerText = JSON.stringify(extracted, null, 4);
+
+            // Formata as datas para o padrão do PostgreSQL (YYYY-MM-DD)
+            const formatData = (dataStr) => {
+                if (dataStr === 'Não encontrado') return 'NULL';
+                const partes = dataStr.split('/');
+                return partes.length === 3 ? `'${partes[2]}-${partes[1]}-${partes[0]}'` : 'NULL';
+            };
+
+            const dt_inicio = formatData(extracted.data_inicio);
+            const dt_termino = formatData(extracted.data_termino);
+            const ch = extracted.carga_horaria !== 'Não encontrado' ? extracted.carga_horaria : 'NULL';
+
+            // Gera a Query SQL
+            const sql = `INSERT INTO plano_estagio (aluno_nome, aluno_matricula, aluno_curso, empresa_nome, empresa_cnpj, data_inicio, data_termino, carga_horaria, tipo_estagio) 
+VALUES ('${extracted.aluno_nome}', '${extracted.aluno_matricula}', '${extracted.aluno_curso}', '${extracted.empresa_nome}', '${extracted.empresa_cnpj}', ${dt_inicio}, ${dt_termino}, ${ch}, '${extracted.tipo_estagio}');`;
+
+            document.getElementById('outputSQL').innerText = sql;
+        }
+    </script>
+
+</body>
+
+</html>
