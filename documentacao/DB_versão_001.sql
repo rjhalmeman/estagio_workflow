@@ -51,6 +51,7 @@ CREATE TABLE pessoa (
     email       VARCHAR(100) NOT NULL,
     telefone    VARCHAR(20),
     celular     VARCHAR(20)
+    senha       VARCHAR(50)
 );
 COMMENT ON TABLE pessoa IS
   'Tabela base para todas as pessoas físicas do sistema. CPF é a chave universal.';
