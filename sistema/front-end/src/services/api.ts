@@ -162,6 +162,17 @@ export async function updateDocumentStatus(
   return data.data;
 }
 
+export async function downloadDocument(documentId: number): Promise<Blob> {
+  const response = await fetch(`${API_BASE_URL}/documents/${documentId}/download`, {
+    headers: authHeaders(),
+  });
+
+  if (!response.ok) {
+    throw new Error('Erro ao baixar documento.');
+  }
+  return response.blob();
+}
+
 export async function uploadDocument(
   internshipId: number,
   documentType: DocumentType,

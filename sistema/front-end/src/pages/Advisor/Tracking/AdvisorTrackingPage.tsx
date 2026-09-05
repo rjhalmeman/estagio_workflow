@@ -67,13 +67,13 @@ export const AdvisorTrackingPage: React.FC<AdvisorTrackingPageProps> = ({
     );
   };
 
-  const handleReview = async (doc: Document, status: 'APROVADO' | 'REPROVADO') => {
+  const handleReview = async (doc: Document, status: 'APROVADO' | 'REPROVADO', comentario?: string) => {
     if (!doc.realId) {
       setError('Este documento ainda não foi enviado pelo aluno.');
       return;
     }
     try {
-      await updateDocumentStatus(doc.realId, status);
+      await updateDocumentStatus(doc.realId, status, comentario);
       if (cpf) {
         const refreshed = await getInternshipTracking(cpf);
         if (refreshed) setStages(buildTrackingStages(refreshed));
@@ -135,8 +135,8 @@ export const AdvisorTrackingPage: React.FC<AdvisorTrackingPageProps> = ({
       <DocumentReviewModal
         document={selectedDoc}
         onClose={() => setSelectedDoc(null)}
-        onApprove={() => selectedDoc && handleReview(selectedDoc, 'APROVADO')}
-        onReject={() => selectedDoc && handleReview(selectedDoc, 'REPROVADO')}
+        onApprove={(comentario) => selectedDoc && handleReview(selectedDoc, 'APROVADO', comentario)}
+        onReject={(comentario) => selectedDoc && handleReview(selectedDoc, 'REPROVADO', comentario)}
       />
     </div>
   );
