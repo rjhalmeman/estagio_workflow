@@ -1,0 +1,166 @@
+.prae-home-page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-family);
+  overflow: hidden;
+}
+
+.prae-home-body {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: var(--spacing-xl) 15% 100px 15%;
+  display: flex;
+  flex-direction: column;
+}
+
+.prae-content-card {
+  background-color: var(--bg-surface);
+  border-radius: 12px;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+}
+
+/* Abas (Tabs) */
+.prae-tabs-row {
+  display: flex;
+  border-bottom: 1px solid var(--bg-element);
+  width: 100%;
+}
+
+.prae-tab-btn {
+  flex: 1;
+  height: 48px;
+  background: none;
+  border: none;
+  font-family: var(--font-family);
+  font-size: var(--font-size-md);
+  font-weight: 500;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
+.prae-tab-btn:hover {
+  background-color: var(--bg-element);
+}
+
+.prae-tab-active {
+  background-color: var(--accent) !important;
+  color: #121212 !important;
+}
+
+/* Campo de Busca */
+.prae-search-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  width: 100%;
+}
+
+.prae-search-label {
+  font-size: var(--font-size-sm);
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.prae-search-input {
+  height: 38px;
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  padding: 0 var(--spacing-md);
+  font-family: var(--font-family);
+  font-size: var(--font-size-sm);
+  color: var(--text-primary);
+  background-color: transparent;
+  outline: none;
+}
+
+.prae-search-input::placeholder {
+  color: var(--text-muted);
+  opacity: 0.7;
+}
+
+/* Listagem de Cards */
+.prae-list-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  width: 100%;
+}
+
+.prae-list-card {
+  background-color: var(--bg-primary);
+  border: none;
+  border-radius: 8px;
+  height: 52px;
+  padding: 0 var(--spacing-lg);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  text-align: left;
+  cursor: pointer;
+  width: 100%;
+  transition: background-color 0.15s ease;
+}
+
+.prae-list-card:hover {
+  background-color: var(--bg-element);
+}
+
+.prae-card-title {
+  font-size: var(--font-size-md);
+  font-weight: 600; /* semi-bold */
+  color: var(--text-primary);
+}
+
+.prae-card-arrow {
+  color: var(--accent);
+  transition: transform 0.15s ease;
+}
+
+.prae-list-card:hover .prae-card-arrow {
+  transform: translate(2px, -2px);
+}
+
+.prae-empty-state {
+  text-align: center;
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+  padding: var(--spacing-lg) 0;
+}
+
+.prae-logout-container {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--spacing-sm);
+}
+
+.prae-logout-btn {
+  background-color: var(--bg-element);
+  color: var(--error);
+  border: none;
+  height: 32px;
+  padding: 0 var(--spacing-xl);
+  border-radius: 8px;
+  font-family: var(--font-family);
+  font-size: 12px;
+  font-weight: 400;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.prae-logout-btn:hover {
+  background-color: var(--bg-element-hover);
+  color: #c92a2a;
+}

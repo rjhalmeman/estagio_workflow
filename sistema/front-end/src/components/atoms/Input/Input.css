@@ -1,0 +1,86 @@
+.input-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  width: 100%;
+}
+
+.input-label {
+  font-family: var(--font-family);
+  font-size: var(--font-size-sm);
+  font-weight: 400; /* Regular */
+  color: var(--text-primary);
+}
+
+.input-field-wrapper {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.input-field {
+  height: 38px; /* Altura exata sem cortar */
+  padding: 0 var(--spacing-md);
+  font-family: var(--font-family);
+  font-size: var(--font-size-sm);
+  font-weight: 400; /* Regular */
+  color: var(--text-primary);
+  background-color: var(--bg-surface);
+  border: 1px solid var(--accent); /* Borda amarela padrão */
+  border-radius: 10px; /* Bordas arredondadas conforme protótipo */
+  outline: none;
+  transition: border-color 0.15s ease-in-out;
+  width: 100%;
+}
+
+.input-field::placeholder {
+  color: var(--text-muted);
+}
+
+.input-field:focus {
+  border: 1px solid var(--accent-hover); /* Mantém 1px quando selecionado */
+}
+
+.input-field-password {
+  padding-right: 40px;
+}
+
+.input-field:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Erro */
+.input-field-error {
+  background-color: var(--error-bg);
+  color: var(--error);
+  border-color: var(--error);
+}
+
+.input-error {
+  font-family: var(--font-family);
+  font-size: 0.75rem;
+  color: var(--error);
+  font-weight: 400;
+}
+
+/* Toggle de Senha */
+.password-toggle-btn {
+  position: absolute;
+  right: var(--spacing-sm);
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent); /* Cor amarela do ícone */
+  padding: var(--spacing-xs);
+  transition: color 0.15s ease;
+  outline: none;
+}
+
+.password-toggle-btn:hover {
+  color: var(--accent-hover);
+}

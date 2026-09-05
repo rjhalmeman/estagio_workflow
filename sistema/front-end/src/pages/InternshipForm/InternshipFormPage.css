@@ -1,0 +1,473 @@
+/* Layout Geral da Página de Cadastro */
+.internship-form-page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  background-color: var(--bg-surface);
+  font-family: var(--font-family);
+  box-sizing: border-box;
+}
+
+/* Cabeçalho Fixo */
+.form-header-container {
+  height: 60px;
+  background-color: var(--bg-surface);
+  border-bottom: 1px solid var(--bg-element);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--spacing-xl);
+  flex-shrink: 0;
+}
+
+.form-header-left {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.form-header-logo {
+  height: 28px;
+  width: auto;
+  object-fit: contain;
+  margin-right: var(--spacing-sm);
+}
+
+.form-header-back-btn {
+  background: none;
+  border: none;
+  color: var(--accent);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-xs);
+  transition: color 0.15s ease;
+}
+
+.form-header-back-btn:hover {
+  color: var(--accent-hover);
+}
+
+.form-header-title {
+  font-size: var(--font-size-md);
+  font-weight: 400;
+  color: var(--text-primary);
+}
+
+.form-header-right {
+  display: flex;
+  align-items: center;
+}
+
+.form-header-username {
+  font-size: var(--font-size-sm);
+  font-weight: 400;
+  color: var(--text-secondary);
+}
+
+/* Corpo do Formulário (Scrollable) */
+.internship-form-body {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: var(--spacing-xl) 10% 100px 10%; /* Recuo lateral para leitura agradável */
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+/* Seções do Formulário */
+.form-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  padding-bottom: var(--spacing-xl);
+  border-bottom: 1px solid var(--bg-element);
+}
+
+.form-section:last-of-type {
+  border-bottom: none;
+}
+
+/* Título e Ícones da Seção */
+.section-title-wrapper {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-sm);
+}
+
+.section-icon {
+  font-size: 1.25rem;
+  color: var(--accent);
+  line-height: 1.2;
+}
+
+.section-title-wrapper h4 {
+  font-size: 1rem;
+  font-weight: 400;
+  color: var(--text-primary);
+  margin-bottom: 2px;
+}
+
+.section-subtitle {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* Checkbox do Tipo de Estágio */
+.checkbox-group-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.checkbox-group-label {
+  font-size: var(--font-size-sm);
+  font-weight: 400;
+  color: var(--text-primary);
+}
+
+.checkbox-options-row {
+  display: flex;
+  gap: var(--spacing-xl);
+}
+
+.custom-radio-label {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  cursor: pointer;
+  user-select: none;
+}
+
+.custom-radio-input {
+  accent-color: var(--accent);
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+/* Grid Layouts Responsivos */
+.form-fields-grid-5 {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: var(--spacing-md);
+}
+
+.form-fields-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: var(--spacing-md);
+}
+
+.form-fields-grid-4 {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: var(--spacing-md);
+}
+
+.form-fields-grid-3-wide-first {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: var(--spacing-md);
+}
+
+.form-fields-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: var(--spacing-md);
+}
+
+@media (min-width: 768px) {
+  .form-fields-grid-5 {
+    grid-template-columns: 2fr 1fr 2fr 1.2fr 1fr;
+  }
+  .form-fields-grid-3 {
+    grid-template-columns: 2fr 1fr 1fr;
+  }
+  .form-fields-grid-4 {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  .form-fields-grid-3-wide-first {
+    grid-template-columns: 2fr 1fr 1fr;
+  }
+  .form-fields-grid-2 {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Grid de Horários (Grid de 3 Colunas com Linhas Divisórias) */
+.schedule-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-lg);
+  width: 100%;
+}
+
+.schedule-day-column {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  padding-bottom: var(--spacing-lg);
+  border-bottom: 1px solid var(--bg-element);
+}
+
+.schedule-day-column:last-child {
+  border-bottom: none;
+}
+
+@media (min-width: 1024px) {
+  .schedule-grid {
+    grid-template-columns: repeat(3, 1fr);
+    column-gap: 32px;
+    row-gap: 24px;
+    width: 100%;
+  }
+
+  .schedule-day-column {
+    padding-bottom: 0;
+    border-bottom: none;
+  }
+
+  /* Divisória vertical à direita das colunas 1 e 2 */
+  .schedule-day-column:not(:nth-child(3n)) {
+    border-right: 1px solid var(--bg-element);
+    padding-right: 24px;
+  }
+
+  /* Divisória horizontal no topo da segunda linha (Quinta, Sexta, Sábado) */
+  .schedule-day-column:nth-child(n+4) {
+    border-top: 1px solid var(--bg-element);
+    padding-top: 24px;
+  }
+}
+
+.schedule-day-label {
+  font-size: var(--font-size-sm);
+  font-weight: 400;
+  color: var(--text-primary);
+}
+
+.schedule-inputs-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background-color: var(--bg-surface);
+}
+
+.schedule-time-input {
+  width: 80px;
+  height: 38px;
+  border: 1px solid var(--accent);
+  border-radius: 10px;
+  text-align: center;
+  font-family: var(--font-family);
+  font-size: var(--font-size-sm);
+  color: var(--text-primary);
+  background-color: var(--bg-surface);
+  outline: none;
+  transition: border-color 0.15s ease-in-out;
+  cursor: pointer;
+}
+
+.schedule-time-input::-webkit-calendar-picker-indicator {
+  display: none;
+  -webkit-appearance: none;
+}
+
+.schedule-time-input:focus {
+  border-color: var(--accent-hover);
+}
+
+.schedule-text-connector {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+/* Rodapé Fixo (Wizard Submit Bar) */
+.form-footer-container {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 68px;
+  background-color: var(--bg-surface);
+  border-top: 1px solid var(--bg-element);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 var(--spacing-xl);
+  z-index: 100;
+}
+
+.form-footer-content {
+  display: flex;
+  justify-content: space-between; /* Alinha voltar à esquerda e avançar à direita */
+  align-items: center;
+  width: 100%;
+}
+
+.form-footer-submit-btn {
+  min-width: 160px;
+  margin-left: auto; /* Garante alinhamento à direita se botão voltar não for renderizado */
+}
+
+.form-footer-back-btn {
+  min-width: 120px;
+  flex-shrink: 0;
+  --md-outlined-button-leading-space: 24px;
+  --md-outlined-button-trailing-space: 24px;
+}
+
+/* Estilo do Stepper (Passos no Topo) */
+.form-stepper-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px var(--spacing-xl); /* Mais espaçoso */
+  background-color: var(--bg-surface);
+  border-bottom: 1px solid var(--bg-element);
+  flex-shrink: 0;
+  box-sizing: border-box;
+}
+
+.stepper-step {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md); /* Espaço maior entre círculo e texto */
+  opacity: 0.4;
+  transition: opacity 0.2s ease;
+}
+
+.stepper-step.active {
+  opacity: 1;
+}
+
+.stepper-bubble {
+  width: 36px; /* Círculo maior */
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--text-secondary);
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-md); /* Fonte maior */
+  font-family: var(--font-family);
+  transition: border-color 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+  box-sizing: border-box;
+}
+
+.stepper-step.active .stepper-bubble {
+  background-color: var(--accent);
+  border-color: var(--accent);
+  color: var(--text-on-accent);
+}
+
+.stepper-label {
+  font-size: var(--font-size-md); /* Fonte de texto maior */
+  color: var(--text-secondary);
+  white-space: nowrap;
+  transition: color 0.2s ease;
+}
+
+.stepper-step.active .stepper-label {
+  color: var(--text-primary);
+}
+
+.stepper-line {
+  height: 3px; /* Linha mais espessa */
+  width: 80px; /* Linha mais longa */
+  background-color: var(--bg-element);
+  margin: 0 var(--spacing-lg);
+  flex-shrink: 0;
+  border-radius: 2px;
+}
+
+.stepper-line.active {
+  background-color: var(--accent);
+}
+
+.schedule-time-input-error {
+  border-color: var(--error) !important;
+  background-color: var(--error-bg) !important;
+  color: var(--error) !important;
+}
+
+.stepper-clickable {
+  cursor: pointer;
+  outline: none;
+}
+
+.stepper-clickable:hover {
+  opacity: 0.8;
+}
+
+.stepper-clickable:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+
+
+/* Toast Notification */
+.form-toast {
+  position: fixed;
+  bottom: 84px;
+  right: 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 20px;
+  background-color: var(--bg-surface);
+  color: var(--text-primary);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 9999;
+  animation: slideInUp 0.3s ease-out forwards;
+  max-width: 400px;
+  font-family: var(--font-family);
+  font-size: var(--font-size-sm);
+  border: 1px solid var(--bg-element);
+}
+
+.toast-success {
+  border-left: 4px solid var(--accent);
+}
+
+.toast-error {
+  border-left: 4px solid var(--error, #d32f2f);
+}
+
+.toast-icon {
+  font-size: 20px;
+}
+
+.toast-success .toast-icon {
+  color: var(--accent);
+}
+
+.toast-error .toast-icon {
+  color: var(--error, #d32f2f);
+}
+
+.toast-message {
+  font-weight: 500;
+}
+
+@keyframes slideInUp {
+  from {
+    transform: translateY(100px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}

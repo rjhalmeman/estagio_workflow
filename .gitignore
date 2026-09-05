@@ -1,3 +1,11 @@
+# Editor / OS
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+Thumbs.db
+*.local
+
 # Logs
 logs
 *.log
@@ -137,3 +145,6 @@ dist
 # Vite logs files
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+# Local notes
+sistema/TODO.md

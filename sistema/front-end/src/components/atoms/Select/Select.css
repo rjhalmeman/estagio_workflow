@@ -1,0 +1,71 @@
+.select-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  width: 100%;
+}
+
+.select-label {
+  font-family: var(--font-family);
+  font-size: var(--font-size-sm);
+  font-weight: 400;
+  color: var(--text-primary);
+}
+
+.select-field-wrapper {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.select-field {
+  height: 38px;
+  padding: 0 32px 0 var(--spacing-md);
+  font-family: var(--font-family);
+  font-size: var(--font-size-sm);
+  font-weight: 400;
+  color: var(--text-primary);
+  background-color: var(--bg-surface);
+  border: 1px solid var(--accent);
+  border-radius: 10px;
+  outline: none;
+  transition: border-color 0.15s ease-in-out;
+  width: 100%;
+  appearance: none; /* Esconde a seta nativa */
+  cursor: pointer;
+}
+
+.select-field:focus {
+  border: 1px solid var(--accent-hover);
+}
+
+.select-field:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Seta customizada */
+.select-arrow {
+  position: absolute;
+  right: var(--spacing-md);
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+}
+
+/* Erro */
+.select-field-error {
+  background-color: var(--error-bg);
+  color: var(--error);
+  border-color: var(--error);
+}
+
+.select-error {
+  font-family: var(--font-family);
+  font-size: 0.75rem;
+  color: var(--error);
+  font-weight: 400;
+}

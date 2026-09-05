@@ -1,0 +1,257 @@
+/* CSS da Tela de Acompanhamento de Estágio - Aluno */
+
+.tracking-container-page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-family);
+  overflow: hidden;
+}
+
+/* Corpo Principal (Centralizado) */
+.tracking-body {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: var(--spacing-xl) 15% 100px 15%;
+  display: flex;
+  flex-direction: column;
+}
+
+.stages-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+/* Container de cada Etapa (Layout em Cartão) */
+.stage-item-container {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--bg-element);
+  border-radius: 8px;
+  transition: border-color 0.2s ease;
+  margin-bottom: var(--spacing-sm);
+}
+
+.stage-item-container.stage-active {
+  border-color: var(--accent);
+}
+
+.stage-current-tag {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  padding: var(--spacing-sm) var(--spacing-lg) 0 var(--spacing-lg);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Barra da Etapa */
+.stage-header-bar {
+  background: none;
+  border: none;
+  border-radius: 8px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--spacing-lg);
+  cursor: pointer;
+  width: 100%;
+}
+
+.stage-header-left {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.chevron-icon {
+  transition: transform 0.2s ease;
+  color: var(--text-muted);
+}
+
+.chevron-icon.expanded {
+  transform: rotate(90deg);
+}
+
+.stage-header-date {
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+  width: 76px;
+}
+
+.stage-header-arrow {
+  color: var(--text-muted);
+}
+
+.stage-header-title {
+  font-size: var(--font-size-md);
+  font-weight: 400;
+  color: var(--text-primary);
+}
+
+/* Estilo para Etapa Ativa (Amarela Fiel ao Mockup) */
+.active-bar {
+  background-color: var(--accent) !important;
+  color: #121212 !important;
+}
+
+.active-bar:hover {
+  background-color: var(--accent-hover) !important;
+}
+
+.active-bar .chevron-icon,
+.active-bar .stage-header-date,
+.active-bar .stage-header-arrow,
+.active-bar .stage-header-title {
+  color: #121212 !important;
+}
+
+/* Contadores */
+.stage-counters {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.counter-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  font-size: 10px;
+  font-weight: 500;
+  border-radius: 50%;
+  color: #ffffff;
+}
+
+.counter-approved {
+  background-color: #2b8a3e;
+}
+
+.counter-rejected {
+  background-color: #c92a2a;
+}
+
+/* Documentos */
+.stage-documents-container {
+  display: flex;
+  flex-direction: column;
+  padding: 0 var(--spacing-lg) var(--spacing-sm) 44px;
+  border-top: 1px solid var(--bg-element);
+}
+
+.document-row {
+  display: flex;
+  align-items: center;
+  height: 48px;
+  border-bottom: 1px dashed var(--bg-element);
+}
+
+.document-row:last-child {
+  border-bottom: none;
+}
+
+.document-info {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  width: 100%;
+}
+
+.document-bullet {
+  width: 5px;
+  height: 5px;
+  background-color: var(--text-muted);
+  border-radius: 50%;
+}
+
+.document-name {
+  font-size: var(--font-size-sm);
+  color: var(--text-primary);
+  flex-grow: 1;
+}
+
+.document-badge {
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: 400;
+}
+
+.badge-aprovado {
+  background-color: #ebfbee;
+  color: #2b8a3e;
+}
+
+.badge-reprovado {
+  background-color: #fff5f5;
+  color: #c92a2a;
+}
+
+.badge-enviado {
+  background-color: #ebfbee;
+  color: #2b8a3e;
+}
+
+.badge-pendente {
+  background-color: var(--bg-element);
+  color: var(--text-muted);
+}
+
+.tracking-empty-state,
+.tracking-loading-state,
+.tracking-error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  flex-grow: 1;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+.document-upload-btn {
+  background-color: var(--accent);
+  color: #121212;
+  border: none;
+  border-radius: 6px;
+  height: 28px;
+  padding: 0 var(--spacing-sm);
+  font-size: 11px;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+  font-family: var(--font-family);
+  font-weight: 400;
+}
+
+.document-upload-btn:hover {
+  background-color: var(--accent-hover);
+}
+
+.upload-icon {
+  margin-top: -1px;
+}
+
+.tracking-toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: var(--text-primary);
+  color: var(--bg-surface);
+  padding: var(--spacing-sm) var(--spacing-lg);
+  border-radius: var(--border-radius);
+  font-size: var(--font-size-sm);
+  z-index: 1000;
+}

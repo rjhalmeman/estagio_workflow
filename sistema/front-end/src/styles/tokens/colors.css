@@ -1,0 +1,104 @@
+/* Design Tokens: Cores e Temas */
+
+:root {
+  /* Cores Base do Tema Light */
+  --bg-primary: #f8f9fa;
+  --bg-surface: #ffffff;
+  --bg-element: #e9ecef;
+  --bg-element-hover: #dee2e6;
+  
+  --text-primary: #212529;
+  --text-secondary: #495057;
+  --text-muted: #868e96;
+  --text-on-accent: #121212;
+
+  --accent: #f2b705;
+  --accent-hover: #d9a000;
+  --accent-light: #fffbeb;
+
+  --error: #fa5252;
+  --error-bg: #ffe3e3;
+
+  /* Espaçamento e Tipografia Básica */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 12px;
+  --spacing-lg: 16px;
+  --spacing-xl: 24px;
+
+  --font-family: 'Poppins', sans-serif;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.25rem;
+
+  --border-radius: 6px;
+
+  /* Mapeamento de Tema para Google Material Design 3 (M3) */
+  --md-sys-color-primary: var(--accent);
+  --md-sys-color-on-primary: var(--text-on-accent);
+  --md-sys-color-outline: var(--bg-element-hover);
+  --md-sys-color-surface: var(--bg-surface);
+  --md-sys-color-on-surface: var(--text-primary);
+  --md-sys-color-on-surface-variant: var(--text-secondary);
+}
+
+/* Forçamento manual de classes caso desejado */
+.theme-light {
+  --bg-primary: #f8f9fa;
+  --bg-surface: #ffffff;
+  --bg-element: #e9ecef;
+  --bg-element-hover: #dee2e6;
+  
+  --text-primary: #212529;
+  --text-secondary: #495057;
+  --text-muted: #868e96;
+  --text-on-accent: #121212;
+
+  --accent: #f2b705;
+  --accent-hover: #d9a000;
+  --accent-light: #fffbeb;
+
+  --error: #fa5252;
+  --error-bg: #ffe3e3;
+}
+
+.theme-dark {
+  --bg-primary: #121212;
+  --bg-surface: #1e1e1e;
+  --bg-element: #2d2d2d;
+  --bg-element-hover: #3d3d3d;
+  
+  --text-primary: #e0e0e0;
+  --text-secondary: #a0a0a0;
+  --text-muted: #6c757d;
+  --text-on-accent: #121212;
+
+  --accent: #f2b705;
+  --accent-hover: #d9a000;
+  --accent-light: #2d2605;
+
+  --error: #ff6b6b;
+  --error-bg: #2c0e0e;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not(.theme-light) {
+    --bg-primary: #121212;
+    --bg-surface: #1e1e1e;
+    --bg-element: #2d2d2d;
+    --bg-element-hover: #3d3d3d;
+    
+    --text-primary: #e0e0e0;
+    --text-secondary: #a0a0a0;
+    --text-muted: #6c757d;
+    --text-on-accent: #121212;
+
+    --accent: #f2b705;
+    --accent-hover: #d9a000;
+    --accent-light: #2d2605;
+
+    --error: #ff6b6b;
+    --error-bg: #2c0e0e;
+  }
+}
+

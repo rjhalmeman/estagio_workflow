@@ -1,0 +1,57 @@
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 38px; /* Altura padrão alinhada com os inputs */
+  padding: 0 var(--spacing-lg);
+  font-family: var(--font-family);
+  font-size: 12px;
+  font-weight: 400; /* Regular */
+  border-radius: var(--border-radius);
+  border: none; /* Sem bordas conforme regra */
+  box-shadow: none; /* Sem sombras conforme regra */
+  cursor: pointer;
+  transition: background-color 0.15s ease-in-out, opacity 0.15s ease-in-out;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Variante Primária */
+.btn-primary {
+  background-color: var(--accent);
+  color: var(--text-on-accent);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: var(--accent-hover);
+}
+
+/* Variante Secundária */
+.btn-secondary {
+  background-color: var(--bg-element);
+  color: var(--text-primary);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background-color: var(--bg-element-hover);
+}
+
+/* Variante Danger */
+.btn-danger {
+  background-color: var(--error);
+  color: var(--text-on-accent);
+}
+
+.btn-danger:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+/* Estado de Loading */
+.btn-loading {
+  cursor: wait;
+}

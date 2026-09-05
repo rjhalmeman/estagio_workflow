@@ -1,0 +1,171 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model aluno {
+  cpf                  String                @id @db.Char(11)
+  ra                   String                @unique @db.VarChar(20)
+  id_curso             Int
+  cpf_orientador       String?               @db.Char(11)
+  pessoa               pessoa                @relation(fields: [cpf], references: [cpf], onUpdate: NoAction)
+  curso                curso                 @relation(fields: [id_curso], references: [id_curso], onDelete: NoAction, onUpdate: NoAction)
+  professor_orientador professor_orientador? @relation(fields: [cpf_orientador], references: [cpf], onDelete: SetNull, onUpdate: NoAction)
+  estagio              estagio[]
+
+  @@index([id_curso], map: "idx_aluno_curso")
+  @@index([cpf_orientador], map: "idx_aluno_orientador")
+}
+
+model cidade {
+  id_cidade          Int                  @id @default(autoincrement())
+  nome               String               @db.VarChar(100)
+  uf                 String               @db.Char(2)
+  unidade_concedente unidade_concedente[]
+}
+
+model curso {
+  id_curso       Int              @id @default(autoincrement())
+  nome           String           @unique @db.VarChar(100)
+  aluno          aluno[]
+  professor_prae professor_prae[]
+}
+
+enum StatusDocumento {
+  PENDENTE
+  APROVADO
+  REPROVADO
+}
+
+model documento_estagio {
+  id_documento   Int             @id @default(autoincrement())
+  id_estagio     Int
+  tipo_documento String          @db.VarChar(30)
+  nome_arquivo   String          @db.VarChar(200)
+  conteudo       Bytes
+  status         StatusDocumento @default(PENDENTE)
+  comentario     String?         @db.VarChar(500)
+  data_upload    DateTime        @default(now()) @db.Timestamptz(6)
+  estagio        estagio         @relation(fields: [id_estagio], references: [id_estagio], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([id_estagio, tipo_documento])
+  @@index([id_estagio], map: "idx_doc_estagio")
+}
+
+model estagio {
+  id_estagio           Int                  @id @default(autoincrement())
+  numero_termo         String               @unique @db.VarChar(20)
+  tipo                 String               @db.VarChar(20)
+  cpf_aluno            String               @db.Char(11)
+  cnpj_uce             String               @db.Char(14)
+  cpf_supervisor       String               @db.Char(11)
+  cpf_orientador       String               @db.Char(11)
+  data_inicio          DateTime             @db.Date
+  data_termino         DateTime             @db.Date
+  valor_bolsa          Decimal              @default(0.00) @db.Decimal(10, 2)
+  beneficios           String?              @db.VarChar(200)
+  seguro_apolice       String?              @db.VarChar(50)
+  seguradora           String?              @db.VarChar(100)
+  aprovado             Boolean              @default(false)
+  processo_sei         String?              @db.VarChar(50)
+  nota_apresentacao    Decimal?             @db.Decimal(4, 2)
+  documento_estagio    documento_estagio[]
+  unidade_concedente   unidade_concedente   @relation(fields: [cnpj_uce], references: [cnpj], onDelete: NoAction, onUpdate: NoAction)
+  aluno                aluno                @relation(fields: [cpf_aluno], references: [cpf], onDelete: NoAction, onUpdate: NoAction)
+  professor_orientador professor_orientador @relation(fields: [cpf_orientador], references: [cpf], onDelete: NoAction, onUpdate: NoAction)
+  supervisor           supervisor           @relation(fields: [cpf_supervisor], references: [cpf], onDelete: NoAction, onUpdate: NoAction)
+  plano_estagio        plano_estagio[]
+
+  @@index([cpf_aluno], map: "idx_estagio_aluno")
+  @@index([cpf_orientador], map: "idx_estagio_orientador")
+  @@index([cnpj_uce], map: "idx_estagio_uce")
+}
+
+model pessoa {
+  cpf                  String                @id @db.Char(11)
+  nome                 String                @db.VarChar(150)
+  email                String                @db.VarChar(100)
+  telefone             String?               @db.VarChar(20)
+  celular              String?               @db.VarChar(20)
+  senha                String?               @db.VarChar(100)
+  aluno                aluno?
+  professor_orientador professor_orientador?
+  professor_prae       professor_prae?
+  representante_uce    representante_uce?
+  supervisor           supervisor?
+}
+
+model plano_estagio {
+  id_plano              Int             @id @default(autoincrement())
+  id_estagio            Int
+  data_inicio           DateTime        @db.Date
+  data_fim              DateTime?       @db.Date
+  carga_horaria_semanal Int
+  carga_horaria_total   Int
+  atividades            String?
+  objetivos             String?
+  resultados_esperados  String?
+  estagio               estagio         @relation(fields: [id_estagio], references: [id_estagio], onDelete: Cascade, onUpdate: NoAction)
+  plano_horario         plano_horario[]
+
+  @@index([id_estagio], map: "idx_plano_estagio")
+}
+
+model plano_horario {
+  id_plano      Int
+  dia_semana    String        @db.VarChar(15)
+  hora_inicio   DateTime      @db.Time(6)
+  hora_fim      DateTime      @db.Time(6)
+  plano_estagio plano_estagio @relation(fields: [id_plano], references: [id_plano], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([id_plano, dia_semana])
+}
+
+model professor_orientador {
+  cpf          String    @id @db.Char(11)
+  departamento String?   @db.VarChar(100)
+  estagio      estagio[]
+  aluno        aluno[]
+  pessoa       pessoa    @relation(fields: [cpf], references: [cpf], onUpdate: NoAction)
+}
+
+model professor_prae {
+  cpf      String @id @db.Char(11)
+  id_curso Int
+  pessoa   pessoa @relation(fields: [cpf], references: [cpf], onUpdate: NoAction)
+  curso    curso  @relation(fields: [id_curso], references: [id_curso], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model representante_uce {
+  cpf                String             @id @db.Char(11)
+  cargo              String             @db.VarChar(100)
+  cnpj_uce           String             @db.Char(14)
+  data_inicio        DateTime           @db.Date
+  data_fim           DateTime?          @db.Date
+  unidade_concedente unidade_concedente @relation(fields: [cnpj_uce], references: [cnpj], onDelete: NoAction, onUpdate: NoAction)
+  pessoa             pessoa             @relation(fields: [cpf], references: [cpf], onUpdate: NoAction)
+}
+
+model supervisor {
+  cpf                String             @id @db.Char(11)
+  cargo              String             @db.VarChar(100)
+  cnpj_uce           String             @db.Char(14)
+  estagio            estagio[]
+  unidade_concedente unidade_concedente @relation(fields: [cnpj_uce], references: [cnpj], onDelete: NoAction, onUpdate: NoAction)
+  pessoa             pessoa             @relation(fields: [cpf], references: [cpf], onUpdate: NoAction)
+}
+
+model unidade_concedente {
+  cnpj              String              @id @db.Char(14)
+  nome              String              @db.VarChar(150)
+  telefone          String?             @db.VarChar(20)
+  endereco          String?             @db.VarChar(200)
+  id_cidade         Int
+  estagio           estagio[]
+  representante_uce representante_uce[]
+  supervisor        supervisor[]
+  cidade            cidade              @relation(fields: [id_cidade], references: [id_cidade], onDelete: NoAction, onUpdate: NoAction)
+}

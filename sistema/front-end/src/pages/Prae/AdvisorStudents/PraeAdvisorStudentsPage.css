@@ -1,0 +1,165 @@
+.prae-students-page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-family);
+  overflow: hidden;
+}
+
+.prae-students-body {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: var(--spacing-xl) 15% 100px 15%;
+  display: flex;
+  flex-direction: column;
+}
+
+.prae-students-card {
+  background-color: var(--bg-surface);
+  border-radius: 12px;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+}
+
+.prae-students-header {
+  margin-bottom: var(--spacing-xs);
+}
+
+.prae-students-header h3 {
+  font-size: 1.5rem;
+  font-weight: 600; /* semi-bold */
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.prae-students-header p {
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.prae-students-divider {
+  border: none;
+  height: 1px;
+  background-color: var(--bg-element);
+  margin: var(--spacing-md) 0 var(--spacing-xl) 0;
+}
+
+.prae-students-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  width: 100%;
+  margin-bottom: var(--spacing-xl);
+}
+
+.prae-student-row {
+  background-color: var(--bg-primary);
+  border: none;
+  border-radius: 8px;
+  padding: var(--spacing-md) var(--spacing-lg);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  text-align: left;
+  width: 100%;
+  transition: background-color 0.15s ease;
+}
+
+.prae-student-row:hover {
+  background-color: var(--bg-element);
+}
+
+.prae-student-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.prae-student-name {
+  font-size: var(--font-size-md);
+  font-weight: 600; /* semi-bold */
+  color: var(--text-primary);
+}
+
+.prae-student-company {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.prae-student-pending {
+  font-size: 11px;
+  color: var(--error);
+  font-weight: 500;
+  margin-top: 2px;
+}
+
+.prae-student-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.prae-action-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  border-radius: 4px;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.prae-action-btn:hover {
+  opacity: 0.8;
+}
+
+.unlink-btn {
+  color: var(--error);
+}
+
+.unlink-btn:hover {
+  transform: scale(1.1);
+}
+
+.track-btn {
+  color: var(--accent);
+}
+
+.track-btn:hover {
+  transform: translate(2px, -2px);
+}
+
+.prae-add-student-btn {
+  width: 100%;
+  height: 38px;
+  background-color: var(--accent);
+  color: #121212;
+  border: none;
+  border-radius: 8px;
+  font-family: var(--font-family);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.15s ease;
+}
+
+.prae-add-student-btn:hover {
+  background-color: var(--accent-hover);
+}
+
+.prae-students-empty {
+  text-align: center;
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+  padding: var(--spacing-lg) 0;
+}

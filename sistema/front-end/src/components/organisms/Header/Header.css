@@ -1,0 +1,88 @@
+/* Estilo da Header Reutilizável */
+
+.app-header {
+  height: 64px;
+  background-color: var(--bg-surface);
+  border-bottom: 1px solid var(--bg-element);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--spacing-xl);
+  flex-shrink: 0;
+  width: 100%;
+}
+
+.app-header-left {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.app-header-logo {
+  height: 34px;
+  width: auto;
+  object-fit: contain;
+}
+
+.app-header-divider {
+  width: 1px;
+  height: 20px;
+  background-color: var(--bg-element);
+  margin: 0 var(--spacing-xs);
+}
+
+.app-header-back-group {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: 6px;
+  transition: background-color 0.15s ease;
+  color: var(--text-primary);
+  outline: none;
+}
+
+.app-header-back-group:hover {
+  background-color: var(--bg-element);
+}
+
+.app-header-back-icon {
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s ease, color 0.15s ease;
+}
+
+.app-header-back-group:hover .app-header-back-icon {
+  transform: translateX(-2px);
+  color: var(--accent-hover);
+}
+
+.app-header-title {
+  font-family: var(--font-family);
+  font-size: var(--font-size-md);
+  font-weight: 400;
+}
+
+.app-header-right {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.app-header-username {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  font-weight: 400;
+}
+
+.app-header-title-only {
+  display: flex;
+  align-items: center;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  color: var(--text-primary);
+}

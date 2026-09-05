@@ -1,0 +1,143 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+@import './tokens/colors.css';
+
+/* Reset Básico */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-family);
+  font-size: var(--font-size-md);
+  line-height: 1.5;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Tipografia Restrita: Fonte Regular (400) */
+h1, h2, h3, h4, h5, h6, strong, b {
+  font-weight: 400; /* Usar fonte regular conforme solicitação */
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--accent-hover);
+}
+
+/* Scrollbar Estilizada Global */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--bg-element);
+  border-radius: var(--border-radius);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--bg-element-hover);
+}
+
+/* Ocultação de Scrollbar para Elementos Específicos */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;  /* IE/Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+/* Layouts e Gaps Curtos */
+.flex-row-gap-sm {
+  display: flex;
+  flex-direction: row;
+  gap: var(--spacing-sm);
+}
+
+.flex-col-gap-sm {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+/* Sidebar e Header Fixos (conforme regras) */
+.layout-container {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.sidebar-fixed {
+  width: 240px;
+  height: 100%;
+  flex-shrink: 0;
+  background-color: var(--bg-surface);
+  overflow-y: auto;
+  /* Scrollbar oculta na sidebar conforme regras */
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.sidebar-fixed::-webkit-scrollbar {
+  display: none;
+}
+
+.main-content {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.header-fixed {
+  height: 60px;
+  flex-shrink: 0;
+  background-color: var(--bg-surface);
+  display: flex;
+  align-items: center;
+  padding: 0 var(--spacing-lg);
+}
+
+.page-body {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: var(--spacing-lg);
+}
+
+
+
+md-filled-button, md-outlined-button {
+  --md-filled-button-container-height: 38px; /* Pareamento com inputs */
+  --md-outlined-button-container-height: 38px;
+  --md-filled-button-container-shape: 10px;
+  --md-outlined-button-container-shape: 10px;
+  --md-filled-button-label-text-weight: 400;
+  --md-outlined-button-label-text-weight: 400;
+  --md-filled-button-label-text-font: 'Poppins', sans-serif;
+  --md-outlined-button-label-text-font: 'Poppins', sans-serif;
+  --md-filled-button-label-text-size: 12px;
+  --md-outlined-button-label-text-size: 12px;
+  --md-filled-button-container-elevation: 0;
+  --md-filled-button-hover-container-elevation: 0;
+  --md-filled-button-focus-container-elevation: 0;
+  --md-filled-button-pressed-container-elevation: 0;
+  --md-outlined-button-container-elevation: 0;
+  --md-outlined-button-hover-container-elevation: 0;
+  --md-outlined-button-focus-container-elevation: 0;
+  --md-outlined-button-pressed-container-elevation: 0;
+}

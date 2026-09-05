@@ -1,0 +1,53 @@
+.student-info-container {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xl);
+  margin-bottom: var(--spacing-xl);
+}
+
+.student-info-box {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.student-name {
+  font-size: 1.5rem;
+  font-weight: 600; /* semi-bold */
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+.student-detail {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+.student-info-divider {
+  width: 1px;
+  height: 40px;
+  background-color: var(--bg-element-hover);
+  align-self: center;
+}
+
+.advisor-info-box {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.advisor-info-label {
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+.advisor-info-name {
+  font-size: var(--font-size-sm);
+  color: var(--text-primary);
+  font-weight: 600; /* semi-bold */
+  line-height: 1.4;
+}
