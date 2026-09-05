@@ -2,6 +2,8 @@ import React, { useRef } from 'react';
 
 export interface Document {
   id: string;
+  /** id real do documento no banco (`id_documento`) — só existe quando o documento já foi enviado. */
+  realId?: number;
   name: string;
   status: 'aprovado' | 'reprovado' | 'pendente' | 'enviado';
 }

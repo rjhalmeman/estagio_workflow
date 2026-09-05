@@ -144,6 +144,24 @@ export async function getAdvisorStudents(cpfOrientador: string): Promise<Advisor
   return data.data;
 }
 
+export async function updateDocumentStatus(
+  documentId: number,
+  status: Exclude<DocumentStatus, 'PENDENTE'>,
+  comentario?: string
+): Promise<InternshipDocument> {
+  const response = await fetch(`${API_BASE_URL}/documents/${documentId}/status`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...authHeaders() },
+    body: JSON.stringify({ status, comentario }),
+  });
+
+  const data = await response.json();
+  if (!response.ok || data.status === 'error') {
+    throw new Error(data.message || 'Erro ao atualizar status do documento.');
+  }
+  return data.data;
+}
+
 export async function uploadDocument(
   internshipId: number,
   documentType: DocumentType,

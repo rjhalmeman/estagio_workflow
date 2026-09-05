@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Header } from '../../../components/organisms/Header/Header';
 import { StageItem } from '../../../components/organisms/StageItem/StageItem';
 import { StudentInfoBox } from './components/StudentInfoBox';
 import { DocumentReviewModal } from './components/DocumentReviewModal';
 import type { Document } from '../../../components/organisms/DocumentRow/DocumentRow';
-import type { AuthUser } from '../../../services/api';
+import { getInternshipTracking, updateDocumentStatus, type AuthUser } from '../../../services/api';
+import { buildTrackingStages, type Stage } from '../../../utils/documentStages';
 import './AdvisorTrackingPage.css';
 
 interface SelectedStudent {
+  cpf?: string;
   name: string;
   company: string;
 }
@@ -19,67 +21,45 @@ interface AdvisorTrackingPageProps {
   onBack: () => void;
 }
 
-interface Stage {
-  number: number;
-  title: string;
-  date: string;
-  isActive?: boolean;
-  documents: Document[];
-}
-
-const initialStages: Stage[] = [
-  {
-    number: 1,
-    title: 'Plano de estagio',
-    date: '--/--/----',
-    documents: [
-      { id: '1-1', name: 'Documento x', status: 'aprovado' },
-      { id: '1-2', name: 'Documento y', status: 'aprovado' },
-    ],
-  },
-  {
-    number: 2,
-    title: 'Parcial 1',
-    date: '--/--/----',
-    documents: [
-      { id: '2-1', name: 'Documento x', status: 'aprovado' },
-      { id: '2-2', name: 'Documento y', status: 'aprovado' },
-      { id: '2-3', name: 'Documento z', status: 'reprovado' },
-    ],
-  },
-  {
-    number: 3,
-    title: 'Parcial 2',
-    date: '--/--/----',
-    isActive: true,
-    documents: [
-      { id: '3-1', name: 'Documento x', status: 'aprovado' },
-      { id: '3-2', name: 'Documento y', status: 'reprovado' },
-    ],
-  },
-  {
-    number: 4,
-    title: 'Supervisor',
-    date: '--/--/----',
-    documents: [],
-  },
-  {
-    number: 5,
-    title: 'Visita',
-    date: '--/--/----',
-    documents: [],
-  },
-];
-
-export const AdvisorTrackingPage: React.FC<AdvisorTrackingPageProps> = ({ 
-  user, 
-  selectedStudent, 
-  advisorName, 
-  onBack 
+export const AdvisorTrackingPage: React.FC<AdvisorTrackingPageProps> = ({
+  user,
+  selectedStudent,
+  advisorName,
+  onBack,
 }) => {
-  const [stages, setStages] = useState<Stage[]>(initialStages);
-  const [expanded, setExpanded] = useState<number[]>([1, 3]);
+  const [stages, setStages] = useState<Stage[]>([]);
+  const [expanded, setExpanded] = useState<number[]>([]);
   const [selectedDoc, setSelectedDoc] = useState<Document | null>(null);
+  const cpf = selectedStudent?.cpf;
+  const [loading, setLoading] = useState(Boolean(cpf));
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!cpf) return;
+
+    let cancelled = false;
+
+    getInternshipTracking(cpf)
+      .then((data) => {
+        if (cancelled) return;
+        if (data) {
+          const built = buildTrackingStages(data);
+          setStages(built);
+          const active = built.find((s) => s.isActive);
+          setExpanded(active ? [active.number] : []);
+        }
+      })
+      .catch((err) => {
+        if (!cancelled) setError(err instanceof Error ? err.message : 'Erro ao carregar acompanhamento.');
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [cpf]);
 
   const toggleStage = (num: number) => {
     setExpanded((prev) =>
@@ -87,18 +67,23 @@ export const AdvisorTrackingPage: React.FC<AdvisorTrackingPageProps> = ({
     );
   };
 
-  const handleStatusChange = (docId: string, newStatus: 'aprovado' | 'reprovado') => {
-    setStages((prev) =>
-      prev.map((stage) => ({
-        ...stage,
-        documents: stage.documents.map((doc) =>
-          doc.id === docId ? { ...doc, status: newStatus } : doc
-        ),
-      }))
-    );
+  const handleReview = async (doc: Document, status: 'APROVADO' | 'REPROVADO') => {
+    if (!doc.realId) {
+      setError('Este documento ainda não foi enviado pelo aluno.');
+      return;
+    }
+    try {
+      await updateDocumentStatus(doc.realId, status);
+      if (cpf) {
+        const refreshed = await getInternshipTracking(cpf);
+        if (refreshed) setStages(buildTrackingStages(refreshed));
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Erro ao atualizar status do documento.');
+    }
   };
 
-  const displayCompany = selectedStudent?.name === 'Aluno X' ? " " : (selectedStudent?.company || " ");
+  const currentStage = stages.find((s) => s.isActive)?.number ?? stages.length;
   const headerTitle = user.role === 'professor_prae' ? 'Alunos Orientados' : 'Acompanhar estágio';
 
   return (
@@ -106,36 +91,52 @@ export const AdvisorTrackingPage: React.FC<AdvisorTrackingPageProps> = ({
       <Header title={headerTitle} studentName={user.nome} onBack={onBack} />
 
       <main className="tracking-body no-scrollbar">
-        <StudentInfoBox 
-          name={selectedStudent?.name || "Aluno X"} 
-          company={displayCompany} 
-          currentStage={3} 
-          advisorName={advisorName}
-        />
+        {error && <div className="tracking-toast">{error}</div>}
 
-        <div className="stages-list">
-          {stages.map((stage) => (
-            <StageItem
-              key={stage.number}
-              number={stage.number}
-              title={stage.title}
-              date={stage.date}
-              isActive={stage.isActive}
-              isExpanded={expanded.includes(stage.number)}
-              onToggle={() => toggleStage(stage.number)}
-              documents={stage.documents}
-              isAdvisor={true}
-              onViewDocument={setSelectedDoc}
+        {loading && <div className="tracking-loading-state">Carregando...</div>}
+
+        {!loading && !cpf && (
+          <div className="tracking-empty-state">Selecione um aluno para acompanhar o estágio.</div>
+        )}
+
+        {!loading && cpf && stages.length === 0 && (
+          <div className="tracking-empty-state">Este aluno ainda não tem estágio cadastrado.</div>
+        )}
+
+        {!loading && cpf && stages.length > 0 && (
+          <>
+            <StudentInfoBox
+              name={selectedStudent?.name || ''}
+              company={selectedStudent?.company || ''}
+              currentStage={currentStage}
+              advisorName={advisorName}
             />
-          ))}
-        </div>
+
+            <div className="stages-list">
+              {stages.map((stage) => (
+                <StageItem
+                  key={stage.number}
+                  number={stage.number}
+                  title={stage.title}
+                  date={stage.date}
+                  isActive={stage.isActive}
+                  isExpanded={expanded.includes(stage.number)}
+                  onToggle={() => toggleStage(stage.number)}
+                  documents={stage.documents}
+                  isAdvisor={true}
+                  onViewDocument={setSelectedDoc}
+                />
+              ))}
+            </div>
+          </>
+        )}
       </main>
 
       <DocumentReviewModal
         document={selectedDoc}
         onClose={() => setSelectedDoc(null)}
-        onApprove={(id) => handleStatusChange(id, 'aprovado')}
-        onReject={(id) => handleStatusChange(id, 'reprovado')}
+        onApprove={() => selectedDoc && handleReview(selectedDoc, 'APROVADO')}
+        onReject={() => selectedDoc && handleReview(selectedDoc, 'REPROVADO')}
       />
     </div>
   );
