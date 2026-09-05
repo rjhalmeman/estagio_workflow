@@ -21,27 +21,11 @@ interface SelectedAdvisor {
   name: string;
 }
 
-interface StudentItem {
-  id: string;
-  name: string;
-  company: string;
-  pendingDocs?: number;
-}
-
 const useAppState = () => {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [option, setOption] = useState<'acompanhar' | 'cadastrar' | 'adicionar-alunos' | null>(null);
   const [selectedStudent, setSelectedStudent] = useState<SelectedStudent | null>(null);
   const [selectedAdvisor, setSelectedAdvisor] = useState<SelectedAdvisor | null>(null);
-  const [advisorStudents, setAdvisorStudents] = useState<Record<string, StudentItem[]>>({
-    'prof-x': [
-      { id: 'aluno-x', name: 'Aluno X', company: 'Appmoove', pendingDocs: 5 },
-      { id: 'aluno-y', name: 'Aluno Y', company: 'Coamo' },
-      { id: 'aluno-z', name: 'Aluno Z', company: 'Appmoove' },
-    ],
-    'prof-y': [],
-    'prof-z': [],
-  });
 
   const login = (userData: AuthUser) => setUser(userData);
   const select = (opt: 'acompanhar' | 'cadastrar' | 'adicionar-alunos') => setOption(opt);
@@ -62,10 +46,8 @@ const useAppState = () => {
     option,
     selectedStudent,
     selectedAdvisor,
-    advisorStudents,
     setSelectedStudent,
     setSelectedAdvisor,
-    setAdvisorStudents,
     login,
     select,
     back,
@@ -84,18 +66,9 @@ function App() {
     return (
       <PraeAddStudentsPage
         user={state.user}
-        currentStudents={state.advisorStudents[state.selectedAdvisor!.id] || []}
+        advisor={state.selectedAdvisor!}
         onBack={state.back}
-        onConfirm={(selected) => {
-          state.setAdvisorStudents((prev) => ({
-            ...prev,
-            [state.selectedAdvisor!.id]: [
-              ...(prev[state.selectedAdvisor!.id] || []),
-              ...selected,
-            ],
-          }));
-          state.back();
-        }}
+        onConfirm={state.back}
       />
     );
   }
@@ -107,16 +80,9 @@ function App() {
           <PraeAdvisorStudentsPage
             user={state.user}
             advisor={state.selectedAdvisor}
-            students={state.advisorStudents[state.selectedAdvisor.id] || []}
             onBack={() => state.setSelectedAdvisor(null)}
             onSelectStudent={state.setSelectedStudent}
             onSelectOption={state.select}
-            onUnlinkStudent={(id) => {
-              state.setAdvisorStudents((prev) => ({
-                ...prev,
-                [state.selectedAdvisor!.id]: prev[state.selectedAdvisor!.id].filter((s) => s.id !== id),
-              }));
-            }}
             onNavigateToAdd={() => state.select('adicionar-alunos')}
           />
         );

@@ -1,72 +1,74 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Header } from '../../../components/organisms/Header/Header';
-import type { AuthUser } from '../../../services/api';
+import { getUnassignedStudents, setStudentAdvisor } from '../../../services/api';
+import type { AuthUser, UnassignedStudent } from '../../../services/api';
 import './PraeAddStudentsPage.css';
 
-
-interface StudentItem {
+interface Advisor {
   id: string;
   name: string;
-  company: string;
-  pendingDocs?: number;
-}
-
-interface AvailableStudent {
-  id: string;
-  name: string;
-  ra: string;
-  company: string;
 }
 
 interface PraeAddStudentsPageProps {
   user: AuthUser;
-  currentStudents: StudentItem[];
+  advisor: Advisor;
   onBack: () => void;
-  onConfirm: (selected: Array<{ id: string; name: string; company: string }>) => void;
+  onConfirm: () => void;
 }
-
-const allAvailableStudents: AvailableStudent[] = [
-  { id: 'al-a', name: 'Aluno A', ra: 'a2165981', company: 'Appmoove' },
-  { id: 'al-b', name: 'Aluno B', ra: 'a2165982', company: 'Coamo' },
-  { id: 'al-c', name: 'Aluno C', ra: 'a2165983', company: 'Appmoove' },
-  { id: 'al-d', name: 'Aluno D', ra: 'a2165984', company: 'Google' },
-  { id: 'al-e', name: 'Aluno E', ra: 'a2165985', company: 'Microsoft' },
-  { id: 'al-f', name: 'Aluno F', ra: 'a2165986', company: 'Appmoove' },
-  { id: 'al-g', name: 'Aluno G', ra: 'a2165987', company: 'Coamo' },
-  { id: 'al-h', name: 'Aluno H', ra: 'a2165988', company: 'Indefinida' },
-];
 
 export const PraeAddStudentsPage: React.FC<PraeAddStudentsPageProps> = ({
   user,
-  currentStudents,
+  advisor,
   onBack,
   onConfirm,
 }) => {
+  const [candidates, setCandidates] = useState<UnassignedStudent[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [selectedCpfs, setSelectedCpfs] = useState<string[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const candidates = allAvailableStudents.filter(
-    (student) => !currentStudents.some((cs) => cs.id === student.id)
-  );
+  useEffect(() => {
+    let cancelled = false;
+
+    getUnassignedStudents()
+      .then((data) => {
+        if (!cancelled) setCandidates(data);
+      })
+      .catch((err) => {
+        if (!cancelled) setError(err instanceof Error ? err.message : 'Erro ao carregar alunos disponíveis.');
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const filteredCandidates = candidates.filter(
     (student) =>
-      student.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      student.pessoa.nome.toLowerCase().includes(searchQuery.toLowerCase()) ||
       student.ra.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const handleToggleSelect = (id: string) => {
-    setSelectedIds((prev) =>
-      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+  const handleToggleSelect = (cpf: string) => {
+    setSelectedCpfs((prev) =>
+      prev.includes(cpf) ? prev.filter((x) => x !== cpf) : [...prev, cpf]
     );
   };
 
-  const handleConfirm = () => {
-    const selectedStudentsData = allAvailableStudents
-      .filter((s) => selectedIds.includes(s.id))
-      .map((s) => ({ id: s.id, name: s.name, company: s.company }));
-    
-    onConfirm(selectedStudentsData);
+  const handleConfirm = async () => {
+    setSubmitting(true);
+    try {
+      await Promise.all(selectedCpfs.map((cpf) => setStudentAdvisor(cpf, advisor.id)));
+      onConfirm();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Erro ao vincular alunos.');
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -95,24 +97,28 @@ export const PraeAddStudentsPage: React.FC<PraeAddStudentsPageProps> = ({
           </div>
 
           <div className="prae-add-list">
-            {filteredCandidates.map((student) => {
-              const isSelected = selectedIds.includes(student.id);
+            {error && <div className="prae-add-empty">{error}</div>}
+
+            {loading && !error && <div className="prae-add-empty">Carregando...</div>}
+
+            {!loading && !error && filteredCandidates.map((student) => {
+              const isSelected = selectedCpfs.includes(student.cpf);
               return (
                 <button
-                  key={student.id}
+                  key={student.cpf}
                   className={`prae-add-item-card ${isSelected ? 'selected' : ''}`}
-                  onClick={() => handleToggleSelect(student.id)}
-                  aria-label={`Selecionar ${student.name}`}
+                  onClick={() => handleToggleSelect(student.cpf)}
+                  aria-label={`Selecionar ${student.pessoa.nome}`}
                   aria-pressed={isSelected}
                 >
                   <div className="prae-add-item-info">
-                    <span className="prae-add-item-name">{student.name}</span>
+                    <span className="prae-add-item-name">{student.pessoa.nome}</span>
                     <span className="prae-add-item-ra">{student.ra}</span>
                   </div>
                 </button>
               );
             })}
-            {filteredCandidates.length === 0 && (
+            {!loading && !error && filteredCandidates.length === 0 && (
               <div className="prae-add-empty">Nenhum aluno disponível.</div>
             )}
           </div>
@@ -122,10 +128,10 @@ export const PraeAddStudentsPage: React.FC<PraeAddStudentsPageProps> = ({
       <footer className="prae-add-footer">
         <button
           className="prae-add-confirm-btn"
-          disabled={selectedIds.length === 0}
+          disabled={selectedCpfs.length === 0 || submitting}
           onClick={handleConfirm}
         >
-          Confirmar (selecionados: {selectedIds.length})
+          {submitting ? 'Vinculando...' : `Confirmar (selecionados: ${selectedCpfs.length})`}
         </button>
       </footer>
     </div>

@@ -162,6 +162,57 @@ export async function updateDocumentStatus(
   return data.data;
 }
 
+export interface AdvisorSummary {
+  cpf: string;
+  departamento: string;
+  pessoa: { nome: string; email: string };
+  _count: { aluno: number };
+}
+
+export async function getAdvisors(): Promise<AdvisorSummary[]> {
+  const response = await fetch(`${API_BASE_URL}/advisors`, {
+    headers: authHeaders(),
+  });
+
+  const data = await response.json();
+  if (!response.ok || data.status === 'error') {
+    throw new Error(data.message || 'Erro ao buscar orientadores.');
+  }
+  return data.data;
+}
+
+export interface UnassignedStudent {
+  cpf: string;
+  ra: string;
+  pessoa: { nome: string; email: string };
+  curso: { nome: string };
+}
+
+export async function getUnassignedStudents(): Promise<UnassignedStudent[]> {
+  const response = await fetch(`${API_BASE_URL}/students/unassigned`, {
+    headers: authHeaders(),
+  });
+
+  const data = await response.json();
+  if (!response.ok || data.status === 'error') {
+    throw new Error(data.message || 'Erro ao buscar alunos sem orientador.');
+  }
+  return data.data;
+}
+
+export async function setStudentAdvisor(cpfAluno: string, cpfOrientador: string | null): Promise<void> {
+  const response = await fetch(`${API_BASE_URL}/students/${cpfAluno}/advisor`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...authHeaders() },
+    body: JSON.stringify({ cpf_orientador: cpfOrientador }),
+  });
+
+  const data = await response.json();
+  if (!response.ok || data.status === 'error') {
+    throw new Error(data.message || 'Erro ao atualizar vínculo do aluno.');
+  }
+}
+
 export async function downloadDocument(documentId: number): Promise<Blob> {
   const response = await fetch(`${API_BASE_URL}/documents/${documentId}/download`, {
     headers: authHeaders(),

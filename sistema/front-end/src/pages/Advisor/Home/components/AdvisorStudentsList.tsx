@@ -1,32 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { getAdvisorStudents } from '../../../../services/api';
-import type { AdvisorStudentSummary } from '../../../../services/api';
+import { toStudentListItem, type StudentListItem } from '../../../../utils/advisorStudents';
 import './AdvisorStudentsList.css';
 
-export interface StudentListItem {
-  id: string;
-  cpf: string;
-  name: string;
-  company: string;
-  pendingDocs?: number;
-}
+export type { StudentListItem };
 
 interface AdvisorStudentsListProps {
   advisorCpf: string;
   onSelectStudent: (student: StudentListItem) => void;
-}
-
-function toStudentListItem(student: AdvisorStudentSummary): StudentListItem {
-  const activeInternship = student.estagio[0];
-  const pendingDocs = activeInternship?.documento_estagio.filter((doc) => doc.status === 'PENDENTE').length ?? 0;
-
-  return {
-    id: student.cpf,
-    cpf: student.cpf,
-    name: student.pessoa.nome,
-    company: activeInternship?.unidade_concedente.nome || 'Sem estágio ativo',
-    pendingDocs: pendingDocs > 0 ? pendingDocs : undefined,
-  };
 }
 
 const ArrowIcon: React.FC = () => (

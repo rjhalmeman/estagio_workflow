@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Header } from '../../../components/organisms/Header/Header';
-import type { AuthUser } from '../../../services/api';
+import { getAdvisors, getUnassignedStudents } from '../../../services/api';
+import type { AdvisorSummary, AuthUser, UnassignedStudent } from '../../../services/api';
 import './PraeHomePage.css';
 
 interface PraeHomePageProps {
@@ -8,37 +9,25 @@ interface PraeHomePageProps {
   onLogout: () => void;
   onSelectOption: (option: 'acompanhar' | 'cadastrar') => void;
   onSelectAdvisor?: (advisor: { id: string; name: string }) => void;
-  onSelectStudent?: (student: { name: string; company: string }) => void;
+  onSelectStudent?: (student: { cpf: string; name: string; company: string }) => void;
 }
 
 interface ListItem {
   id: string;
   name: string;
-  type: 'professor' | 'estagiario';
+  subtitle: string;
 }
 
-const mockProfessors: ListItem[] = [
-  { id: 'prof-x', name: 'Professor X', type: 'professor' },
-  { id: 'prof-y', name: 'Professor Y', type: 'professor' },
-  { id: 'prof-z', name: 'Professor Z', type: 'professor' },
-];
-
-const mockStudents: ListItem[] = [
-  { id: 'est-x', name: 'Estagiário A', type: 'estagiario' },
-  { id: 'est-y', name: 'Estagiário B', type: 'estagiario' },
-  { id: 'est-z', name: 'Estagiário C', type: 'estagiario' },
-];
-
 const ArrowIcon: React.FC = () => (
-  <svg 
-    className="prae-card-arrow" 
-    width="16" 
-    height="16" 
-    viewBox="0 0 24 24" 
-    fill="none" 
-    stroke="currentColor" 
-    strokeWidth="2.5" 
-    strokeLinecap="round" 
+  <svg
+    className="prae-card-arrow"
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2.5"
+    strokeLinecap="round"
     strokeLinejoin="round"
   >
     <line x1="7" y1="17" x2="17" y2="7" />
@@ -46,17 +35,55 @@ const ArrowIcon: React.FC = () => (
   </svg>
 );
 
-export const PraeHomePage: React.FC<PraeHomePageProps> = ({ 
-  user, 
+function toAdvisorItem(advisor: AdvisorSummary): ListItem {
+  const count = advisor._count.aluno;
+  return {
+    id: advisor.cpf,
+    name: advisor.pessoa.nome,
+    subtitle: `${count} aluno${count === 1 ? '' : 's'} orientado${count === 1 ? '' : 's'}`,
+  };
+}
+
+function toStudentItem(student: UnassignedStudent): ListItem {
+  return { id: student.cpf, name: student.pessoa.nome, subtitle: student.curso.nome };
+}
+
+export const PraeHomePage: React.FC<PraeHomePageProps> = ({
+  user,
   onLogout,
-  onSelectOption, 
-  onSelectAdvisor, 
-  onSelectStudent 
+  onSelectOption,
+  onSelectAdvisor,
+  onSelectStudent
 }) => {
   const [activeTab, setActiveTab] = useState<'professores' | 'estagiarios'>('professores');
   const [searchQuery, setSearchQuery] = useState('');
+  const [advisors, setAdvisors] = useState<ListItem[]>([]);
+  const [students, setStudents] = useState<ListItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const currentList = activeTab === 'professores' ? mockProfessors : mockStudents;
+  useEffect(() => {
+    let cancelled = false;
+
+    Promise.all([getAdvisors(), getUnassignedStudents()])
+      .then(([advisorsData, studentsData]) => {
+        if (cancelled) return;
+        setAdvisors(advisorsData.map(toAdvisorItem));
+        setStudents(studentsData.map(toStudentItem));
+      })
+      .catch((err) => {
+        if (!cancelled) setError(err instanceof Error ? err.message : 'Erro ao carregar dados.');
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const currentList = activeTab === 'professores' ? advisors : students;
 
   const filteredList = currentList.filter((item) =>
     item.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -66,9 +93,7 @@ export const PraeHomePage: React.FC<PraeHomePageProps> = ({
     if (activeTab === 'professores') {
       onSelectAdvisor?.({ id: item.id, name: item.name });
     } else {
-      const mockCompany = item.name === 'Estagiário B' ? 'Coamo' : 'Appmoove';
-      onSelectStudent?.({ name: item.name, company: mockCompany });
-      onSelectAdvisor?.({ id: 'prof-x', name: 'Professor X' });
+      onSelectStudent?.({ cpf: item.id, name: item.name, company: '' });
       onSelectOption('acompanhar');
     }
   };
@@ -118,18 +143,25 @@ export const PraeHomePage: React.FC<PraeHomePageProps> = ({
 
           {/* Listagem */}
           <div className="prae-list-container">
-            {filteredList.map((item) => (
+            {error && <div className="prae-empty-state">{error}</div>}
+
+            {loading && !error && <div className="prae-empty-state">Carregando...</div>}
+
+            {!loading && !error && filteredList.map((item) => (
               <button
                 key={item.id}
                 className="prae-list-card"
                 onClick={() => handleCardClick(item)}
                 aria-label={`Visualizar detalhes de ${item.name}`}
               >
-                <span className="prae-card-title">{item.name}</span>
+                <div className="prae-card-info">
+                  <span className="prae-card-title">{item.name}</span>
+                  <span className="prae-card-subtitle">{item.subtitle}</span>
+                </div>
                 <ArrowIcon />
               </button>
             ))}
-            {filteredList.length === 0 && (
+            {!loading && !error && filteredList.length === 0 && (
               <div className="prae-empty-state">Nenhum registro encontrado.</div>
             )}
           </div>
