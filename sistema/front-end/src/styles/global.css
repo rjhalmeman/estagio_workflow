@@ -20,18 +20,45 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Tipografia Restrita: Fonte Regular (400) */
 h1, h2, h3, h4, h5, h6, strong, b {
-  font-weight: 400; /* Usar fonte regular conforme solicitação */
+  font-weight: 400;
 }
 
 a {
   color: var(--accent);
   text-decoration: none;
+  transition: color var(--transition-fast);
 }
 
 a:hover {
   color: var(--accent-hover);
+}
+
+/* Keyframes Globais de Microanimações */
+@keyframes dropdownSlideIn {
+  from { opacity: 0; transform: translateY(-6px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes modalBackdropFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes modalPopIn {
+  from { opacity: 0; transform: translateY(10px) scale(0.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes checkPop {
+  0% { transform: scale(0.5); opacity: 0; }
+  70% { transform: scale(1.14); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes stageFadeSlide {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 /* Scrollbar Estilizada Global */
@@ -53,16 +80,15 @@ a:hover {
   background: var(--bg-element-hover);
 }
 
-/* Ocultação de Scrollbar para Elementos Específicos */
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
 .no-scrollbar {
-  -ms-overflow-style: none;  /* IE/Edge */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
-/* Layouts e Gaps Curtos */
 .flex-row-gap-sm {
   display: flex;
   flex-direction: row;
@@ -75,54 +101,62 @@ a:hover {
   gap: var(--spacing-sm);
 }
 
-/* Sidebar e Header Fixos (conforme regras) */
-.layout-container {
-  display: flex;
-  height: 100vh;
-  overflow: hidden;
-}
-
-.sidebar-fixed {
-  width: 240px;
-  height: 100%;
-  flex-shrink: 0;
-  background-color: var(--bg-surface);
-  overflow-y: auto;
-  /* Scrollbar oculta na sidebar conforme regras */
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-.sidebar-fixed::-webkit-scrollbar {
-  display: none;
-}
-
-.main-content {
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  overflow: hidden;
-}
-
-.header-fixed {
-  height: 60px;
-  flex-shrink: 0;
-  background-color: var(--bg-surface);
-  display: flex;
+/* Microcomponente Customizado: Checkbox com Material Icon */
+.ui-checkbox-label {
+  display: inline-flex;
   align-items: center;
-  padding: 0 var(--spacing-lg);
+  gap: var(--spacing-sm);
+  font-size: var(--font-size-sm);
+  color: var(--text-primary);
+  cursor: pointer;
+  user-select: none;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-md);
+  transition: background-color var(--transition-fast);
 }
 
-.page-body {
-  flex-grow: 1;
-  overflow-y: auto;
-  padding: var(--spacing-lg);
+.ui-checkbox-label:hover {
+  background-color: var(--bg-surface-hover);
 }
 
+.ui-checkbox-input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
 
+.ui-checkbox-box {
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  border: 1px solid var(--accent);
+  background-color: var(--bg-surface);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-on-accent);
+  transition: background-color var(--transition-fast), transform var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.ui-checkbox-input:checked + .ui-checkbox-box {
+  background-color: var(--accent);
+}
+
+.ui-checkbox-input:focus-visible + .ui-checkbox-box {
+  outline: 2px solid var(--accent-hover);
+  outline-offset: 2px;
+}
+
+.ui-checkbox-icon {
+  font-size: 15px;
+  animation: checkPop 0.2s var(--ease-spring) forwards;
+}
 
 md-filled-button, md-outlined-button {
-  --md-filled-button-container-height: 38px; /* Pareamento com inputs */
+  --md-filled-button-container-height: 38px;
   --md-outlined-button-container-height: 38px;
   --md-filled-button-container-shape: 10px;
   --md-outlined-button-container-shape: 10px;

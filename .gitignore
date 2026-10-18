@@ -142,23 +142,36 @@ dist
 !.yarn/sdks
 !.yarn/versions
 
-# Vite logs files
+# Vite & Turborepo cache / logs
+.vite/
+.turbo/
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 
-# Local notes & temporary directories
+# Test & E2E artifacts
+test-results/
+playwright-report/
+blob-report/
+
+# Local notes, uploads & temporary directories
 sistema/TODO.md
 uploads/
 tmp/
 temp/
+*.tmp
+*.bak
 
-# Database local files
+# Database & Certificates / Secrets
 *.db
 *.db-journal
 *.sqlite
 *.sqlite3
+*.pem
+*.key
+*.crt
 
-# AI / Agent directories
+# OS & AI / Agent directories
+Desktop.ini
 .gemini/
 .agent/
 .agents/

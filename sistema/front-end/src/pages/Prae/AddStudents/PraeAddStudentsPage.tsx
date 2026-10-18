@@ -101,23 +101,28 @@ export const PraeAddStudentsPage: React.FC<PraeAddStudentsPageProps> = ({
 
             {loading && !error && <div className="prae-add-empty">Carregando...</div>}
 
-            {!loading && !error && filteredCandidates.map((student) => {
-              const isSelected = selectedCpfs.includes(student.cpf);
-              return (
-                <button
-                  key={student.cpf}
-                  className={`prae-add-item-card ${isSelected ? 'selected' : ''}`}
-                  onClick={() => handleToggleSelect(student.cpf)}
-                  aria-label={`Selecionar ${student.pessoa.nome}`}
-                  aria-pressed={isSelected}
-                >
-                  <div className="prae-add-item-info">
-                    <span className="prae-add-item-name">{student.pessoa.nome}</span>
-                    <span className="prae-add-item-ra">{student.ra}</span>
-                  </div>
-                </button>
-              );
-            })}
+            {!loading &&
+              !error &&
+              filteredCandidates.map((student) => {
+                const isSelected = selectedCpfs.includes(student.cpf);
+                return (
+                  <button
+                    key={student.cpf}
+                    className={`prae-add-item-card ${isSelected ? 'selected' : ''}`}
+                    onClick={() => handleToggleSelect(student.cpf)}
+                    aria-label={`Selecionar ${student.pessoa.nome}`}
+                    aria-pressed={isSelected}
+                  >
+                    <div className="prae-add-item-info">
+                      <span className="prae-add-item-name">{student.pessoa.nome}</span>
+                      <span className="prae-add-item-ra">{student.ra}</span>
+                    </div>
+                    <span className="material-icons prae-add-check-icon">
+                      {isSelected ? 'check_box' : 'check_box_outline_blank'}
+                    </span>
+                  </button>
+                );
+              })}
             {!loading && !error && filteredCandidates.length === 0 && (
               <div className="prae-add-empty">Nenhum aluno disponível.</div>
             )}

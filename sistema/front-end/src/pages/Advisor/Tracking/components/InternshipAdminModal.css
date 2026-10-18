@@ -4,11 +4,12 @@
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(0, 0, 0, 0.4);
+  background-color: rgba(0, 0, 0, 0.45);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
+  animation: modalBackdropFadeIn 0.2s var(--ease-out-quart) forwards;
 }
 
 .admin-modal-content {
@@ -16,11 +17,12 @@
   color: var(--text-primary);
   width: 560px;
   max-width: 95%;
-  border-radius: var(--border-radius);
+  border-radius: 12px;
   padding: var(--spacing-xl);
   display: flex;
   flex-direction: column;
   gap: var(--spacing-md);
+  animation: modalPopIn 0.24s var(--ease-out-quart) forwards;
 }
 
 .admin-modal-header {
@@ -39,9 +41,18 @@
   background: none;
   border: none;
   color: var(--error);
-  font-size: var(--font-size-md);
   cursor: pointer;
   padding: var(--spacing-xs);
+  border-radius: var(--radius-md);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color var(--transition-fast), transform var(--transition-fast);
+}
+
+.admin-modal-close:hover {
+  background-color: var(--error-bg);
+  transform: rotate(90deg);
 }
 
 .admin-modal-error {
@@ -59,12 +70,10 @@
 }
 
 .admin-checkbox-row {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-  font-size: var(--font-size-sm);
-  color: var(--text-primary);
-  cursor: pointer;
+  align-self: flex-start;
+  border: 1px solid var(--bg-element-hover);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: 10px;
 }
 
 .admin-modal-grid {
@@ -84,12 +93,30 @@
 .admin-btn-save {
   height: 38px;
   padding: 0 var(--spacing-lg);
-  border-radius: var(--border-radius);
+  border-radius: var(--radius-lg);
   font-family: var(--font-family);
   font-size: var(--font-size-sm);
   font-weight: 500;
   border: none;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: background-color var(--transition-fast), transform var(--transition-fast);
+}
+
+.admin-btn-cancel:hover,
+.admin-btn-save:hover {
+  transform: translateY(-1px);
+}
+
+.admin-btn-cancel:active,
+.admin-btn-save:active {
+  transform: scale(0.97);
+}
+
+.admin-btn-icon {
+  font-size: 17px;
 }
 
 .admin-btn-cancel {

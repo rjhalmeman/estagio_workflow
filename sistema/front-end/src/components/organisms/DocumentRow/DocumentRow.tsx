@@ -2,7 +2,6 @@ import React, { useRef } from 'react';
 
 export interface Document {
   readonly id: string;
-  /** id real do documento no banco (`id_documento`) — só existe quando o documento já foi enviado. */
   readonly realId?: number;
   readonly name: string;
   readonly status: 'aprovado' | 'reprovado' | 'pendente' | 'enviado';
@@ -17,46 +16,12 @@ interface DocumentRowProps {
   readonly isStageActive?: boolean;
 }
 
-const UploadIcon: React.FC = () => (
-  <svg 
-    className="upload-icon" 
-    width="14" 
-    height="14" 
-    viewBox="0 0 24 24" 
-    fill="none" 
-    stroke="currentColor" 
-    strokeWidth="2.5" 
-    strokeLinecap="round" 
-    strokeLinejoin="round"
-  >
-    <line x1="12" y1="19" x2="12" y2="5" />
-    <polyline points="5 12 12 5 19 12" />
-  </svg>
-);
-
-const ViewIcon: React.FC = () => (
-  <svg 
-    className="view-icon" 
-    width="14" 
-    height="14" 
-    viewBox="0 0 24 24" 
-    fill="none" 
-    stroke="currentColor" 
-    strokeWidth="2.5" 
-    strokeLinecap="round" 
-    strokeLinejoin="round"
-  >
-    <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
-    <circle cx="12" cy="12" r="3" />
-  </svg>
-);
-
 export const DocumentRow: React.FC<DocumentRowProps> = ({
   document,
   onUpload,
   isAdvisor = false,
   onViewDocument,
-  isStageActive = false
+  isStageActive = false,
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const canUpload = document.status === 'pendente' || document.status === 'reprovado';
@@ -80,18 +45,14 @@ export const DocumentRow: React.FC<DocumentRowProps> = ({
 
         {!isAdvisor && canUpload && (
           <>
-            <input
-              ref={fileInputRef}
-              type="file"
-              hidden
-              onChange={handleFileChange}
-            />
+            <input ref={fileInputRef} type="file" hidden onChange={handleFileChange} />
             <button
               className="document-upload-btn"
               onClick={() => fileInputRef.current?.click()}
               aria-label={`Enviar documento para ${document.name}`}
             >
-              Enviar documento <UploadIcon />
+              <span>Enviar documento</span>
+              <span className="material-icons upload-icon">upload_file</span>
             </button>
           </>
         )}
@@ -102,16 +63,17 @@ export const DocumentRow: React.FC<DocumentRowProps> = ({
             onClick={() => onViewDocument?.(document)}
             aria-label={`Visualizar ${document.name}`}
           >
-            Ver documento <ViewIcon />
+            <span>Ver documento</span>
+            <span className="material-icons view-icon">visibility</span>
           </button>
         )}
       </div>
       {document.comentario && (
         <p className="document-comment" role="note">
-          Observação do orientador: {document.comentario}
+          <span className="material-icons document-comment-icon">chat_bubble_outline</span>
+          <span>Observação do orientador: {document.comentario}</span>
         </p>
       )}
     </div>
   );
 };
-

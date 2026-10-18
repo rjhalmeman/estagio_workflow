@@ -9,23 +9,12 @@ interface HeaderProps {
   readonly showBack?: boolean;
 }
 
-const BackIcon: React.FC = () => (
-  <svg 
-    width="16" 
-    height="16" 
-    viewBox="0 0 24 24" 
-    fill="none" 
-    stroke="currentColor" 
-    strokeWidth="2.5" 
-    strokeLinecap="round" 
-    strokeLinejoin="round"
-  >
-    <line x1="19" y1="12" x2="5" y2="12" />
-    <polyline points="12 19 5 12 12 5" />
-  </svg>
-);
-
-export const Header: React.FC<HeaderProps> = ({ title, studentName, onBack, showBack = true }) => {
+export const Header: React.FC<HeaderProps> = ({
+  title,
+  studentName,
+  onBack,
+  showBack = true,
+}) => {
   const { theme, toggleTheme, systemOnline } = useAppContext();
 
   return (
@@ -33,29 +22,27 @@ export const Header: React.FC<HeaderProps> = ({ title, studentName, onBack, show
       <div className="app-header-left">
         <img src="/logo/image 7.png" alt="UTFPR" className="app-header-logo" />
         {title && <div className="app-header-divider" />}
-        {title && (
-          showBack && onBack ? (
+        {title &&
+          (showBack && onBack ? (
             <button className="app-header-back-group" onClick={onBack} aria-label="Voltar">
-              <span className="app-header-back-icon">
-                <BackIcon />
-              </span>
+              <span className="material-icons app-header-back-icon">arrow_back</span>
               <span className="app-header-title">{title}</span>
             </button>
           ) : (
             <div className="app-header-title-only">
               <span className="app-header-title">{title}</span>
             </div>
-          )
-        )}
+          ))}
       </div>
-      
+
       <div className="app-header-right">
         {systemOnline !== null && (
           <span
             className={`app-header-status ${systemOnline ? 'status-online' : 'status-offline'}`}
             title={systemOnline ? 'Servidor conectado' : 'Servidor indisponível'}
           >
-            {systemOnline ? '● Online' : '● Offline'}
+            <span className="material-icons app-header-status-dot">fiber_manual_record</span>
+            {systemOnline ? 'Online' : 'Offline'}
           </span>
         )}
         <button
@@ -64,9 +51,15 @@ export const Header: React.FC<HeaderProps> = ({ title, studentName, onBack, show
           onClick={toggleTheme}
           aria-label="Alternar tema claro ou escuro"
         >
-          {theme === 'dark' ? '☀ Claro' : '☾ Escuro'}
+          <span className="material-icons app-header-theme-icon">
+            {theme === 'dark' ? 'light_mode' : 'dark_mode'}
+          </span>
+          <span>{theme === 'dark' ? 'Claro' : 'Escuro'}</span>
         </button>
-        <span className="app-header-username">{studentName}</span>
+        <div className="app-header-user-pill">
+          <span className="material-icons app-header-user-icon">account_circle</span>
+          <span className="app-header-username">{studentName}</span>
+        </div>
       </div>
     </header>
   );

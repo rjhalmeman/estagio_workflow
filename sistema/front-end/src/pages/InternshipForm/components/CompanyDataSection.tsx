@@ -5,23 +5,34 @@ import type { InternshipFormData } from '../../../types/internship';
 import { maskPhone } from '../../../utils/masks';
 
 interface CompanyDataSectionProps {
-  data: InternshipFormData;
-  onChange: (field: keyof InternshipFormData, value: string) => void;
-  errors: Record<string, string>;
+  readonly data: InternshipFormData;
+  readonly onChange: (field: keyof InternshipFormData, value: string) => void;
+  readonly errors: Record<string, string>;
+  readonly companies?: ReadonlyArray<string>;
+  readonly cities?: ReadonlyArray<string>;
 }
 
 interface RowProps {
-  data: InternshipFormData;
-  onChange: (field: keyof InternshipFormData, value: string) => void;
-  errors: Record<string, string>;
+  readonly data: InternshipFormData;
+  readonly onChange: (field: keyof InternshipFormData, value: string) => void;
+  readonly errors: Record<string, string>;
+  readonly companies?: ReadonlyArray<string>;
+  readonly cities?: ReadonlyArray<string>;
 }
 
-export const CompanyRow1: React.FC<RowProps> = ({ data, onChange, errors }) => (
+export const CompanyRow1: React.FC<RowProps> = ({
+  data,
+  onChange,
+  errors,
+  companies = [],
+  cities = [],
+}) => (
   <div className="form-fields-grid-4">
     <Input
       label="Nome da Empresa*"
       placeholder="Insira o nome da Empresa"
-      list="companies-catalog"
+      suggestions={companies}
+      onSelectSuggestion={(val) => onChange('companyName', val)}
       value={data.companyName}
       onChange={(e) => onChange('companyName', e.target.value)}
       maxLength={100}
@@ -31,7 +42,8 @@ export const CompanyRow1: React.FC<RowProps> = ({ data, onChange, errors }) => (
     <Input
       label="Cidade*"
       placeholder="Insira o nome da cidade"
-      list="cities-catalog"
+      suggestions={cities}
+      onSelectSuggestion={(val) => onChange('city', val)}
       value={data.city}
       onChange={(e) => onChange('city', e.target.value)}
       maxLength={100}
@@ -142,11 +154,23 @@ export const CompanyRow4: React.FC<RowProps> = ({ data, onChange, errors }) => (
   </div>
 );
 
-export const CompanyDataSection: React.FC<CompanyDataSectionProps> = ({ data, onChange, errors }) => {
+export const CompanyDataSection: React.FC<CompanyDataSectionProps> = ({
+  data,
+  onChange,
+  errors,
+  companies,
+  cities,
+}) => {
   return (
     <section className="form-section">
       <SectionHeader icon="business" title="Dados da empresa" subtitle="Preencha os dados abaixo" />
-      <CompanyRow1 data={data} onChange={onChange} errors={errors} />
+      <CompanyRow1
+        data={data}
+        onChange={onChange}
+        errors={errors}
+        companies={companies}
+        cities={cities}
+      />
       <CompanyRow2 data={data} onChange={onChange} errors={errors} />
       <CompanyRow3 data={data} onChange={onChange} errors={errors} />
       <CompanyRow4 data={data} onChange={onChange} errors={errors} />

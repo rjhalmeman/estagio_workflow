@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Header } from '../../../components/organisms/Header/Header';
+import { Select } from '../../../components/atoms/Select/Select';
 import {
   getAdvisors,
   getAllPraeStudents,
@@ -28,47 +29,19 @@ interface ListItem {
 }
 
 const ArrowIcon: React.FC = () => (
-  <svg
-    className="prae-card-arrow"
-    width="16"
-    height="16"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2.5"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <line x1="7" y1="17" x2="17" y2="7" />
-    <polyline points="7 7 17 7 17 17" />
-  </svg>
+  <span className="material-icons prae-card-arrow">north_east</span>
 );
 
 function toAdvisorItem(advisor: AdvisorSummary): ListItem {
   const count = advisor._count.aluno;
-  return {
-    id: advisor.cpf,
-    name: advisor.pessoa.nome,
-    subtitle: `${count} aluno${count === 1 ? '' : 's'} orientado${count === 1 ? '' : 's'}`,
-  };
+  return { id: advisor.cpf, name: advisor.pessoa.nome, subtitle: `${count} aluno${count === 1 ? '' : 's'} orientado${count === 1 ? '' : 's'}` };
 }
 
 function toStudentItem(student: AdvisorStudentSummary): ListItem {
   const company = student.estagio[0]?.unidade_concedente.nome ?? '';
   const advisorName = student.professor_orientador?.pessoa.nome;
-  const details = [
-    `RA: ${student.ra}`,
-    student.curso.nome,
-    company ? `Empresa: ${company}` : 'Sem estágio ativo',
-    advisorName ? `Orientador: ${advisorName}` : 'Sem orientador',
-  ].join(' • ');
-  return {
-    id: student.cpf,
-    name: student.pessoa.nome,
-    ra: student.ra,
-    company,
-    subtitle: details,
-  };
+  const details = [`RA: ${student.ra}`, student.curso.nome, company ? `Empresa: ${company}` : 'Sem estágio ativo', advisorName ? `Orientador: ${advisorName}` : 'Sem orientador'].join(' • ');
+  return { id: student.cpf, name: student.pessoa.nome, ra: student.ra, company, subtitle: details };
 }
 
 export const PraeHomePage: React.FC<PraeHomePageProps> = ({
@@ -123,10 +96,14 @@ export const PraeHomePage: React.FC<PraeHomePageProps> = ({
     );
   }, [activeTab, advisors, students, searchQuery]);
 
+  const courseOptions = useMemo(
+    () => [{ value: '', label: 'Todos os cursos' }, ...courses.map((c) => ({ value: String(c.id_curso), label: c.nome }))],
+    [courses]
+  );
+
   const handleCardClick = (item: ListItem): void => {
-    if (activeTab === 'professores') {
-      onSelectAdvisor?.({ id: item.id, name: item.name });
-    } else {
+    if (activeTab === 'professores') onSelectAdvisor?.({ id: item.id, name: item.name });
+    else {
       onSelectStudent?.({ cpf: item.id, name: item.name, company: item.company ?? '' });
       onSelectOption('acompanhar');
     }
@@ -135,25 +112,18 @@ export const PraeHomePage: React.FC<PraeHomePageProps> = ({
   return (
     <div className="prae-home-page">
       <Header title="" studentName={user.nome} showBack={false} />
-
       <main className="prae-home-body no-scrollbar">
         <div className="prae-content-card">
           <div className="prae-tabs-row">
             <button
               className={`prae-tab-btn ${activeTab === 'professores' ? 'prae-tab-active' : ''}`}
-              onClick={() => {
-                setActiveTab('professores');
-                setSearchQuery('');
-              }}
+              onClick={() => { setActiveTab('professores'); setSearchQuery(''); }}
             >
               Prof. Orientadores
             </button>
             <button
               className={`prae-tab-btn ${activeTab === 'estagiarios' ? 'prae-tab-active' : ''}`}
-              onClick={() => {
-                setActiveTab('estagiarios');
-                setSearchQuery('');
-              }}
+              onClick={() => { setActiveTab('estagiarios'); setSearchQuery(''); }}
             >
               Estagiários
             </button>
@@ -161,16 +131,12 @@ export const PraeHomePage: React.FC<PraeHomePageProps> = ({
 
           <div className="prae-filters-row">
             <div className="prae-search-section">
-              <label className="prae-search-label" htmlFor="prae-search-input">
-                Buscar
-              </label>
+              <label className="prae-search-label" htmlFor="prae-search-input">Buscar</label>
               <input
                 id="prae-search-input"
                 type="text"
                 className="prae-search-input"
-                placeholder={
-                  activeTab === 'professores' ? 'Digite o nome' : 'Digite o nome ou RA do aluno'
-                }
+                placeholder={activeTab === 'professores' ? 'Digite o nome' : 'Digite o nome ou RA do aluno'}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -178,22 +144,13 @@ export const PraeHomePage: React.FC<PraeHomePageProps> = ({
 
             {activeTab === 'estagiarios' && (
               <div className="prae-course-filter">
-                <label className="prae-search-label" htmlFor="prae-course-select">
-                  Curso
-                </label>
-                <select
+                <Select
                   id="prae-course-select"
-                  className="prae-search-input"
+                  label="Curso"
+                  options={courseOptions}
                   value={selectedCourseId}
-                  onChange={(e) => setSelectedCourseId(e.target.value)}
-                >
-                  <option value="">Todos os cursos</option>
-                  {courses.map((c) => (
-                    <option key={c.id_curso} value={String(c.id_curso)}>
-                      {c.nome}
-                    </option>
-                  ))}
-                </select>
+                  onValueChange={setSelectedCourseId}
+                />
               </div>
             )}
           </div>
@@ -201,32 +158,27 @@ export const PraeHomePage: React.FC<PraeHomePageProps> = ({
           <div className="prae-list-container">
             {error && <div className="prae-empty-state">{error}</div>}
             {loading && !error && <div className="prae-empty-state">Carregando...</div>}
-
-            {!loading &&
-              !error &&
-              filteredList.map((item) => (
-                <button
-                  key={item.id}
-                  className="prae-list-card"
-                  onClick={() => handleCardClick(item)}
-                  aria-label={`Visualizar detalhes de ${item.name}`}
-                >
-                  <div className="prae-card-info">
-                    <span className="prae-card-title">{item.name}</span>
-                    <span className="prae-card-subtitle">{item.subtitle}</span>
-                  </div>
-                  <ArrowIcon />
-                </button>
-              ))}
+            {!loading && !error && filteredList.map((item) => (
+              <button
+                key={item.id}
+                className="prae-list-card"
+                onClick={() => handleCardClick(item)}
+                aria-label={`Visualizar detalhes de ${item.name}`}
+              >
+                <div className="prae-card-info">
+                  <span className="prae-card-title">{item.name}</span>
+                  <span className="prae-card-subtitle">{item.subtitle}</span>
+                </div>
+                <ArrowIcon />
+              </button>
+            ))}
             {!loading && !error && filteredList.length === 0 && (
               <div className="prae-empty-state">Nenhum registro encontrado.</div>
             )}
           </div>
 
           <div className="prae-logout-container">
-            <button className="prae-logout-btn" onClick={onLogout}>
-              Sair
-            </button>
+            <button className="prae-logout-btn" onClick={onLogout}>Sair</button>
           </div>
         </div>
       </main>

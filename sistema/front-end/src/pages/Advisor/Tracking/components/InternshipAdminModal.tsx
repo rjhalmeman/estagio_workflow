@@ -88,7 +88,7 @@ export const InternshipAdminModal: React.FC<InternshipAdminModalProps> = ({
         <div className="admin-modal-header">
           <h3 className="admin-modal-title">Dados Administrativos do Estágio</h3>
           <button className="admin-modal-close" onClick={onClose} aria-label="Fechar modal">
-            ✕
+            <span className="material-icons">close</span>
           </button>
         </div>
 
@@ -99,13 +99,17 @@ export const InternshipAdminModal: React.FC<InternshipAdminModalProps> = ({
         )}
 
         <form onSubmit={handleSubmit} className="admin-modal-form">
-          <label className="admin-checkbox-row" htmlFor="estagio-aprovado">
+          <label className="ui-checkbox-label admin-checkbox-row" htmlFor="estagio-aprovado">
             <input
               id="estagio-aprovado"
               type="checkbox"
+              className="ui-checkbox-input"
               checked={form.aprovado}
               onChange={(e) => updateField('aprovado', e.target.checked)}
             />
+            <span className="ui-checkbox-box">
+              {form.aprovado && <span className="material-icons ui-checkbox-icon">check</span>}
+            </span>
             <span>Estágio aprovado / homologado</span>
           </label>
 
@@ -158,7 +162,8 @@ export const InternshipAdminModal: React.FC<InternshipAdminModalProps> = ({
               Cancelar
             </button>
             <button type="submit" className="admin-btn-save" disabled={saving}>
-              {saving ? 'Salvando...' : 'Salvar alterações'}
+              <span className="material-icons admin-btn-icon">check_circle</span>
+              <span>{saving ? 'Salvando...' : 'Salvar alterações'}</span>
             </button>
           </div>
         </form>

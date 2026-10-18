@@ -78,9 +78,9 @@
 
 .prae-add-item-card {
   background-color: var(--bg-primary);
-  border: none;
-  border-radius: 8px;
-  height: 52px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  height: 54px;
   padding: 0 var(--spacing-lg);
   display: flex;
   align-items: center;
@@ -88,16 +88,36 @@
   text-align: left;
   cursor: pointer;
   width: 100%;
-  transition: background-color 0.15s ease, color 0.15s ease;
+  transition:
+    background-color var(--transition-fast),
+    border-color var(--transition-fast),
+    transform var(--transition-fast);
 }
 
 .prae-add-item-card:hover {
   background-color: var(--bg-element);
+  border-color: var(--accent);
+  transform: translateY(-1px);
+}
+
+.prae-add-item-card:active {
+  transform: scale(0.99);
 }
 
 .prae-add-item-card.selected {
   background-color: var(--accent) !important;
   color: #121212 !important;
+}
+
+.prae-add-check-icon {
+  font-size: 20px;
+  color: var(--text-muted);
+  transition: transform var(--transition-fast), color var(--transition-fast);
+}
+
+.prae-add-item-card.selected .prae-add-check-icon {
+  color: #121212;
+  animation: checkPop 0.2s var(--ease-spring) forwards;
 }
 
 .prae-add-item-info {
@@ -108,7 +128,7 @@
 
 .prae-add-item-name {
   font-size: var(--font-size-md);
-  font-weight: 600; /* semi-bold */
+  font-weight: 600;
 }
 
 .prae-add-item-card.selected .prae-add-item-name {

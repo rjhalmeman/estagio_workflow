@@ -2,18 +2,30 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  height: 38px; /* Altura padrão alinhada com os inputs */
+  gap: var(--spacing-xs);
+  height: 38px;
   padding: 0 var(--spacing-lg);
   font-family: var(--font-family);
   font-size: 12px;
-  font-weight: 400; /* Regular */
-  border-radius: var(--border-radius);
-  border: none; /* Sem bordas conforme regra */
-  box-shadow: none; /* Sem sombras conforme regra */
+  font-weight: 500;
+  border-radius: var(--radius-lg);
+  border: none;
+  box-shadow: none;
   cursor: pointer;
-  transition: background-color 0.15s ease-in-out, opacity 0.15s ease-in-out;
+  transition:
+    background-color var(--transition-fast),
+    opacity var(--transition-fast),
+    transform var(--transition-fast);
   white-space: nowrap;
   user-select: none;
+}
+
+.btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.btn:active:not(:disabled) {
+  transform: translateY(0) scale(0.97);
 }
 
 .btn:disabled {
@@ -21,7 +33,6 @@
   cursor: not-allowed;
 }
 
-/* Variante Primária */
 .btn-primary {
   background-color: var(--accent);
   color: var(--text-on-accent);
@@ -31,7 +42,6 @@
   background-color: var(--accent-hover);
 }
 
-/* Variante Secundária */
 .btn-secondary {
   background-color: var(--bg-element);
   color: var(--text-primary);
@@ -41,7 +51,6 @@
   background-color: var(--bg-element-hover);
 }
 
-/* Variante Danger */
 .btn-danger {
   background-color: var(--error);
   color: var(--text-on-accent);
@@ -51,7 +60,6 @@
   opacity: 0.9;
 }
 
-/* Estado de Loading */
 .btn-loading {
   cursor: wait;
 }

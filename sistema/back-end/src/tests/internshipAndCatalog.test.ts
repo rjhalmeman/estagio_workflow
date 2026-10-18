@@ -272,6 +272,13 @@ describe('Suite 2 — Cadastro de Estágio, Catálogos, Horários (2 Turnos) e P
     assert.ok(body.data.length >= 1);
   });
 
+  it('Auditoria de Bug #8: Orientador B não deve conseguir consultar acompanhamento (GET /api/internships/student/:cpf) de aluno do Orientador A', async () => {
+    const res = await fetch(`${ctx.baseUrl}/internships/student/${TEST_CPFS.student}`, {
+      headers: { Authorization: `Bearer ${otherAdvisorToken}` },
+    });
+    assert.equal(res.status, 403);
+  });
+
   it('PATCH /api/internships/:id pelo orientador responsável deve atualizar dados administrativos', async () => {
     const res = await fetch(`${ctx.baseUrl}/internships/${createdInternshipId}`, {
       method: 'PATCH',

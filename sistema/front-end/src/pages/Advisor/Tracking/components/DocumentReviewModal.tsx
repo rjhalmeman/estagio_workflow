@@ -4,27 +4,11 @@ import { downloadDocument } from '../../../../services/api';
 import './DocumentReviewModal.css';
 
 interface DocumentReviewModalProps {
-  document: Document | null;
-  onClose: () => void;
-  onApprove: (comentario?: string) => void;
-  onReject: (comentario?: string) => void;
+  readonly document: Document | null;
+  readonly onClose: () => void;
+  readonly onApprove: (comentario?: string) => void;
+  readonly onReject: (comentario?: string) => void;
 }
-
-const RedCloseIcon: React.FC = () => (
-  <svg
-    width="16"
-    height="16"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="#e03131"
-    strokeWidth="2.5"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <line x1="18" y1="6" x2="6" y2="18" />
-    <line x1="6" y1="6" x2="18" y2="18" />
-  </svg>
-);
 
 function guessMimeType(filename: string): string {
   const extension = filename.split('.').pop()?.toLowerCase();
@@ -41,7 +25,7 @@ function guessMimeType(filename: string): string {
   }
 }
 
-const DocumentPreview: React.FC<{ doc: Document }> = ({ doc }) => {
+const DocumentPreview: React.FC<{ readonly doc: Document }> = ({ doc }) => {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [mimeType, setMimeType] = useState<string>('application/octet-stream');
   const [loading, setLoading] = useState(Boolean(doc.realId));
@@ -76,7 +60,12 @@ const DocumentPreview: React.FC<{ doc: Document }> = ({ doc }) => {
   }, [doc.realId, doc.name]);
 
   if (!doc.realId) {
-    return <div className="document-viewer-state">Este documento ainda não foi enviado pelo aluno.</div>;
+    return (
+      <div className="document-viewer-state">
+        <span className="material-icons document-viewer-empty-icon">description</span>
+        <span>Este documento ainda não foi enviado pelo aluno.</span>
+      </div>
+    );
   }
 
   if (loading) {
@@ -84,7 +73,11 @@ const DocumentPreview: React.FC<{ doc: Document }> = ({ doc }) => {
   }
 
   if (error || !previewUrl) {
-    return <div className="document-viewer-state">{error || 'Não foi possível carregar o documento.'}</div>;
+    return (
+      <div className="document-viewer-state">
+        {error || 'Não foi possível carregar o documento.'}
+      </div>
+    );
   }
 
   if (mimeType === 'application/pdf') {
@@ -97,9 +90,10 @@ const DocumentPreview: React.FC<{ doc: Document }> = ({ doc }) => {
 
   return (
     <div className="document-viewer-state">
-      Pré-visualização não disponível para este tipo de arquivo.
+      <span>Pré-visualização não disponível para este tipo de arquivo.</span>
       <a className="document-viewer-download" href={previewUrl} download={doc.name}>
-        Baixar documento
+        <span className="material-icons">download</span>
+        <span>Baixar documento</span>
       </a>
     </div>
   );
@@ -121,19 +115,19 @@ export const DocumentReviewModal: React.FC<DocumentReviewModalProps> = ({
 
   if (!document) return null;
 
-  const handleApprove = () => {
+  const handleApprove = (): void => {
     onApprove(comment.trim() || undefined);
     setComment('');
     onClose();
   };
 
-  const handleReject = () => {
+  const handleReject = (): void => {
     onReject(comment.trim() || undefined);
     setComment('');
     onClose();
   };
 
-  const handleClose = () => {
+  const handleClose = (): void => {
     setComment('');
     onClose();
   };
@@ -147,7 +141,7 @@ export const DocumentReviewModal: React.FC<DocumentReviewModalProps> = ({
             <span className="modal-subtitle">{document.name}</span>
           </div>
           <button className="modal-close-btn" onClick={handleClose} aria-label="Fechar modal">
-            <RedCloseIcon />
+            <span className="material-icons">close</span>
           </button>
         </div>
 
@@ -172,10 +166,12 @@ export const DocumentReviewModal: React.FC<DocumentReviewModalProps> = ({
 
         <div className="modal-footer">
           <button className="modal-btn btn-secondary" onClick={handleReject}>
-            Solicitar correção
+            <span className="material-icons modal-btn-icon">edit_note</span>
+            <span>Solicitar correção</span>
           </button>
           <button className="modal-btn btn-primary" onClick={handleApprove}>
-            Aprovar
+            <span className="material-icons modal-btn-icon">check_circle</span>
+            <span>Aprovar</span>
           </button>
         </div>
       </div>

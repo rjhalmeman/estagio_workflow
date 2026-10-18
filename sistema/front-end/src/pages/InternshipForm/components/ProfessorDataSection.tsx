@@ -7,12 +7,14 @@ interface ProfessorDataSectionProps {
   readonly data: InternshipFormData;
   readonly onChange: (field: keyof InternshipFormData, value: string) => void;
   readonly errors?: Record<string, string>;
+  readonly advisors?: ReadonlyArray<string>;
 }
 
 export const ProfessorDataSection: React.FC<ProfessorDataSectionProps> = ({
   data,
   onChange,
   errors = {},
+  advisors = [],
 }) => {
   return (
     <section className="form-section">
@@ -21,7 +23,8 @@ export const ProfessorDataSection: React.FC<ProfessorDataSectionProps> = ({
         <Input
           label="Nome do Professor"
           placeholder="Insira o nome do Professor"
-          list="advisors-catalog"
+          suggestions={advisors}
+          onSelectSuggestion={(val) => onChange('professorName', val)}
           value={data.professorName}
           onChange={(e) => onChange('professorName', e.target.value)}
           error={errors.professorName}

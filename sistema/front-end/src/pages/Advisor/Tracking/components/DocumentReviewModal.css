@@ -4,11 +4,12 @@
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(0, 0, 0, 0.4);
+  background-color: rgba(0, 0, 0, 0.45);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
+  animation: modalBackdropFadeIn 0.2s var(--ease-out-quart) forwards;
 }
 
 .modal-content {
@@ -20,6 +21,7 @@
   flex-direction: column;
   padding: var(--spacing-xl);
   gap: var(--spacing-md);
+  animation: modalPopIn 0.24s var(--ease-out-quart) forwards;
 }
 
 .modal-header {
@@ -49,16 +51,19 @@
 .modal-close-btn {
   background: none;
   border: none;
+  color: var(--error);
   cursor: pointer;
   padding: 4px;
+  border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: opacity 0.15s ease;
+  transition: background-color var(--transition-fast), transform var(--transition-fast);
 }
 
 .modal-close-btn:hover {
-  opacity: 0.7;
+  background-color: var(--error-bg);
+  transform: rotate(90deg);
 }
 
 .modal-body {
@@ -67,7 +72,6 @@
   gap: var(--spacing-md);
 }
 
-/* Visualizador de PDF/imagem/documento */
 .document-viewer {
   background-color: var(--bg-element);
   height: 320px;
@@ -101,13 +105,20 @@
   font-size: var(--font-size-sm);
 }
 
+.document-viewer-empty-icon {
+  font-size: 32px;
+  color: var(--accent);
+}
+
 .document-viewer-download {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   color: var(--accent);
   font-weight: 500;
   text-decoration: underline;
 }
 
-/* Área de Comentários */
 .comment-section {
   display: flex;
   flex-direction: column;
@@ -122,15 +133,21 @@
 
 .comment-textarea {
   border: 1px solid var(--accent);
-  border-radius: 8px;
+  border-radius: 10px;
   padding: var(--spacing-sm) var(--spacing-md);
   font-family: var(--font-family);
   font-size: var(--font-size-sm);
   color: var(--text-primary);
-  background-color: transparent;
+  background-color: var(--bg-surface);
   min-height: 80px;
   resize: vertical;
   outline: none;
+  transition: border-color var(--transition-fast), background-color var(--transition-fast);
+}
+
+.comment-textarea:focus {
+  border-color: var(--accent-hover);
+  background-color: var(--bg-surface-hover);
 }
 
 .comment-textarea::placeholder {
@@ -138,7 +155,6 @@
   opacity: 0.7;
 }
 
-/* Rodapé e Botões Alinhados à Direita */
 .modal-footer {
   display: flex;
   align-items: center;
@@ -149,7 +165,7 @@
 
 .modal-btn {
   height: 38px;
-  padding: 0 var(--spacing-xl);
+  padding: 0 var(--spacing-lg);
   border-radius: 10px;
   font-family: var(--font-family);
   font-size: 12px;
@@ -159,23 +175,14 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: background-color 0.15s ease, opacity 0.15s ease;
+  gap: 6px;
+  transition: background-color var(--transition-fast), transform var(--transition-fast);
 }
 
-.btn-secondary {
-  background-color: var(--bg-element);
-  color: var(--text-primary);
-}
-
-.btn-secondary:hover {
-  background-color: var(--bg-element-hover);
-}
-
-.btn-primary {
-  background-color: var(--accent);
-  color: #121212;
-}
-
-.btn-primary:hover {
-  background-color: var(--accent-hover);
-}
+.modal-btn:hover { transform: translateY(-1px); }
+.modal-btn:active { transform: scale(0.97); }
+.modal-btn-icon { font-size: 17px; }
+.btn-secondary { background-color: var(--bg-element); color: var(--text-primary); }
+.btn-secondary:hover { background-color: var(--bg-element-hover); }
+.btn-primary { background-color: var(--accent); color: var(--text-on-accent); }
+.btn-primary:hover { background-color: var(--accent-hover); }

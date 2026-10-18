@@ -1,12 +1,13 @@
-/* Design Tokens: Cores e Temas */
+/* Design Tokens: Cores, Espaçamentos e Microanimações */
 
 :root {
   /* Cores Base do Tema Light */
   --bg-primary: #f8f9fa;
   --bg-surface: #ffffff;
+  --bg-surface-hover: #f1f3f5;
   --bg-element: #e9ecef;
   --bg-element-hover: #dee2e6;
-  
+
   --text-primary: #212529;
   --text-secondary: #495057;
   --text-muted: #868e96;
@@ -15,11 +16,14 @@
   --accent: #f2b705;
   --accent-hover: #d9a000;
   --accent-light: #fffbeb;
+  --accent-subtle: rgba(242, 183, 5, 0.16);
 
   --error: #fa5252;
   --error-bg: #ffe3e3;
+  --success: #2f9e44;
+  --success-bg: rgba(47, 158, 68, 0.15);
 
-  /* Espaçamento e Tipografia Básica */
+  /* Espaçamento e Tipografia */
   --spacing-xs: 4px;
   --spacing-sm: 8px;
   --spacing-md: 12px;
@@ -32,8 +36,16 @@
   --font-size-lg: 1.25rem;
 
   --border-radius: 6px;
+  --radius-md: 8px;
+  --radius-lg: 10px;
 
-  /* Mapeamento de Tema para Google Material Design 3 (M3) */
+  /* Curvas de Microanimação */
+  --ease-out-quart: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --transition-fast: 0.16s cubic-bezier(0.22, 1, 0.36, 1);
+  --transition-smooth: 0.24s cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* Mapeamento Material Design 3 */
   --md-sys-color-primary: var(--accent);
   --md-sys-color-on-primary: var(--text-on-accent);
   --md-sys-color-outline: var(--bg-element-hover);
@@ -42,13 +54,13 @@
   --md-sys-color-on-surface-variant: var(--text-secondary);
 }
 
-/* Forçamento manual de classes caso desejado */
 .theme-light {
   --bg-primary: #f8f9fa;
   --bg-surface: #ffffff;
+  --bg-surface-hover: #f1f3f5;
   --bg-element: #e9ecef;
   --bg-element-hover: #dee2e6;
-  
+
   --text-primary: #212529;
   --text-secondary: #495057;
   --text-muted: #868e96;
@@ -57,17 +69,21 @@
   --accent: #f2b705;
   --accent-hover: #d9a000;
   --accent-light: #fffbeb;
+  --accent-subtle: rgba(242, 183, 5, 0.16);
 
   --error: #fa5252;
   --error-bg: #ffe3e3;
+  --success: #2f9e44;
+  --success-bg: rgba(47, 158, 68, 0.15);
 }
 
 .theme-dark {
   --bg-primary: #121212;
   --bg-surface: #1e1e1e;
+  --bg-surface-hover: #272727;
   --bg-element: #2d2d2d;
   --bg-element-hover: #3d3d3d;
-  
+
   --text-primary: #e0e0e0;
   --text-secondary: #a0a0a0;
   --text-muted: #6c757d;
@@ -76,18 +92,22 @@
   --accent: #f2b705;
   --accent-hover: #d9a000;
   --accent-light: #2d2605;
+  --accent-subtle: rgba(242, 183, 5, 0.2);
 
   --error: #ff6b6b;
   --error-bg: #2c0e0e;
+  --success: #40c057;
+  --success-bg: rgba(64, 192, 87, 0.18);
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not(.theme-light) {
     --bg-primary: #121212;
     --bg-surface: #1e1e1e;
+    --bg-surface-hover: #272727;
     --bg-element: #2d2d2d;
     --bg-element-hover: #3d3d3d;
-    
+
     --text-primary: #e0e0e0;
     --text-secondary: #a0a0a0;
     --text-muted: #6c757d;
@@ -96,9 +116,11 @@
     --accent: #f2b705;
     --accent-hover: #d9a000;
     --accent-light: #2d2605;
+    --accent-subtle: rgba(242, 183, 5, 0.2);
 
     --error: #ff6b6b;
     --error-bg: #2c0e0e;
+    --success: #40c057;
+    --success-bg: rgba(64, 192, 87, 0.18);
   }
 }
-

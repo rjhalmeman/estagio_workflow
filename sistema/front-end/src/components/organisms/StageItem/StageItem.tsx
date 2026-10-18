@@ -3,37 +3,23 @@ import { DocumentRow } from '../DocumentRow/DocumentRow';
 import type { Document } from '../DocumentRow/DocumentRow';
 
 interface StageItemProps {
-  number: number;
-  title: string;
-  date: string;
-  isActive?: boolean;
-  isExpanded: boolean;
-  onToggle: () => void;
-  documents?: Document[];
-  onUpload?: (docId: string, file: File) => void;
-  isAdvisor?: boolean;
-  onViewDocument?: (doc: Document) => void;
+  readonly number: number;
+  readonly title: string;
+  readonly date: string;
+  readonly isActive?: boolean;
+  readonly isExpanded: boolean;
+  readonly onToggle: () => void;
+  readonly documents?: Document[];
+  readonly onUpload?: (docId: string, file: File) => void;
+  readonly isAdvisor?: boolean;
+  readonly onViewDocument?: (doc: Document) => void;
 }
 
-const ChevronIcon: React.FC<{ isExpanded: boolean }> = ({ isExpanded }) => (
-  <svg 
-    className={`chevron-icon ${isExpanded ? 'expanded' : ''}`} 
-    width="16" 
-    height="16" 
-    viewBox="0 0 24 24" 
-    fill="none" 
-    stroke="currentColor" 
-    strokeWidth="2.5" 
-    strokeLinecap="round" 
-    strokeLinejoin="round"
-  >
-    <polyline points="9 18 15 12 9 6" />
-  </svg>
-);
-
-const StageCounters: React.FC<{ documents: Document[] }> = ({ documents }) => {
-  const approvedCount = documents.filter(d => d.status === 'aprovado' || d.status === 'enviado').length;
-  const rejectedCount = documents.filter(d => d.status === 'reprovado').length;
+const StageCounters: React.FC<{ readonly documents: Document[] }> = ({ documents }) => {
+  const approvedCount = documents.filter(
+    (d) => d.status === 'aprovado' || d.status === 'enviado'
+  ).length;
+  const rejectedCount = documents.filter((d) => d.status === 'reprovado').length;
 
   return (
     <div className="stage-counters">
@@ -44,14 +30,14 @@ const StageCounters: React.FC<{ documents: Document[] }> = ({ documents }) => {
 };
 
 interface StageHeaderProps {
-  number: number;
-  title: string;
-  date: string;
-  isActive: boolean;
-  isExpanded: boolean;
-  onToggle: () => void;
-  showCounters: boolean;
-  documents: Document[];
+  readonly number: number;
+  readonly title: string;
+  readonly date: string;
+  readonly isActive: boolean;
+  readonly isExpanded: boolean;
+  readonly onToggle: () => void;
+  readonly showCounters: boolean;
+  readonly documents: Document[];
 }
 
 const StageHeader: React.FC<StageHeaderProps> = ({
@@ -64,16 +50,20 @@ const StageHeader: React.FC<StageHeaderProps> = ({
   showCounters,
   documents,
 }) => (
-  <button 
-    className={`stage-header-bar ${isActive ? 'active-bar' : ''}`} 
+  <button
+    className={`stage-header-bar ${isActive ? 'active-bar' : ''}`}
     onClick={onToggle}
     aria-expanded={isExpanded}
   >
     <div className="stage-header-left">
-      <ChevronIcon isExpanded={isExpanded} />
+      <span className={`material-icons chevron-icon ${isExpanded ? 'expanded' : ''}`}>
+        chevron_right
+      </span>
       <span className="stage-header-date">{date}</span>
       <span className="stage-header-arrow">&rarr;</span>
-      <span className="stage-header-title">Etapa {number} &rarr; {title}</span>
+      <span className="stage-header-title">
+        Etapa {number} &rarr; {title}
+      </span>
     </div>
     {showCounters && <StageCounters documents={documents} />}
   </button>
@@ -96,7 +86,7 @@ export const StageItem: React.FC<StageItemProps> = ({
   return (
     <div className={`stage-item-container ${isActive ? 'stage-active' : ''}`}>
       {isActive && <div className="stage-current-tag">Etapa atual</div>}
-      
+
       <StageHeader
         number={number}
         title={title}
@@ -111,10 +101,10 @@ export const StageItem: React.FC<StageItemProps> = ({
       {isExpanded && documents.length > 0 && (
         <div className="stage-documents-container">
           {documents.map((doc) => (
-            <DocumentRow 
-              key={doc.id} 
-              document={doc} 
-              onUpload={onUpload} 
+            <DocumentRow
+              key={doc.id}
+              document={doc}
+              onUpload={onUpload}
               isAdvisor={isAdvisor}
               isStageActive={isActive}
               onViewDocument={onViewDocument}

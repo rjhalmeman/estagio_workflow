@@ -150,6 +150,11 @@ export const InternshipFormPage: React.FC<InternshipFormPageProps> = ({ user, on
     }
   };
 
+  const courseNames = dataState.catalog?.courses.map((c) => c.nome) ?? [];
+  const cityNames = dataState.catalog?.cities.map((c) => c.nome) ?? [];
+  const companyNames = dataState.catalog?.companies.map((c) => c.nome) ?? [];
+  const advisorNames = dataState.catalog?.advisors.map((a) => a.pessoa.nome) ?? [];
+
   return (
     <div className="internship-form-page">
       <Header title="Cadastro de estágio" studentName={user.nome} onBack={onBack} />
@@ -158,6 +163,7 @@ export const InternshipFormPage: React.FC<InternshipFormPageProps> = ({ user, on
           data={dataState.formData}
           onChange={dataState.handleFieldChange}
           errors={errors}
+          courses={courseNames}
         />
         <ScheduleSection
           schedule={dataState.formData.schedule}
@@ -168,26 +174,17 @@ export const InternshipFormPage: React.FC<InternshipFormPageProps> = ({ user, on
           data={dataState.formData}
           onChange={dataState.handleFieldChange}
           errors={errors}
+          companies={companyNames}
+          cities={cityNames}
         />
         <ProfessorDataSection
           data={dataState.formData}
           onChange={dataState.handleFieldChange}
           errors={errors}
+          advisors={advisorNames}
         />
         <FormFooter onBack={onBack} isLoading={loading} />
       </form>
-      <datalist id="courses-catalog">
-        {dataState.catalog?.courses.map((c) => <option key={c.id_curso} value={c.nome} />)}
-      </datalist>
-      <datalist id="cities-catalog">
-        {dataState.catalog?.cities.map((c) => <option key={c.id_cidade} value={c.nome} />)}
-      </datalist>
-      <datalist id="companies-catalog">
-        {dataState.catalog?.companies.map((c) => <option key={c.cnpj} value={c.nome} />)}
-      </datalist>
-      <datalist id="advisors-catalog">
-        {dataState.catalog?.advisors.map((a) => <option key={a.cpf} value={a.pessoa.nome} />)}
-      </datalist>
       {toast && (
         <div className={`form-toast toast-${toast.type}`} role="alert">
           <span className="material-icons toast-icon">

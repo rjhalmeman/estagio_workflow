@@ -185,16 +185,27 @@ describe('Suite 3 — Upload/Download/Avaliação de Documentos e Fluxo PRAE', (
     assert.ok(advStudentsBody.data.some((s: { cpf: string }) => s.cpf === TEST_CPFS.student));
   });
 
-  it('Supervisor deve conseguir enviar RELATORIO_SUPERVISOR', async () => {
-    const form = new FormData();
-    form.append('documentType', 'RELATORIO_SUPERVISOR');
-    form.append('file', new Blob(['%PDF-1.4 sup'], { type: 'application/pdf' }), 'relatorio_sup.pdf');
+  it('Supervisor deve conseguir enviar RELATORIO_SUPERVISOR e ser bloqueado (403) ao tentar enviar PLANO_ESTAGIO', async () => {
+    const formOk = new FormData();
+    formOk.append('documentType', 'RELATORIO_SUPERVISOR');
+    formOk.append('file', new Blob(['%PDF-1.4 sup'], { type: 'application/pdf' }), 'relatorio_sup.pdf');
 
-    const res = await fetch(`${ctx.baseUrl}/documents/${internshipId}/upload`, {
+    const resOk = await fetch(`${ctx.baseUrl}/documents/${internshipId}/upload`, {
       method: 'POST',
       headers: { Authorization: `Bearer ${supervisorToken}` },
-      body: form,
+      body: formOk,
     });
-    assert.equal(res.status, 200);
+    assert.equal(resOk.status, 200);
+
+    const formForbidden = new FormData();
+    formForbidden.append('documentType', 'PLANO_ESTAGIO');
+    formForbidden.append('file', new Blob(['%PDF-1.4 hack'], { type: 'application/pdf' }), 'plano_hack.pdf');
+
+    const resForbidden = await fetch(`${ctx.baseUrl}/documents/${internshipId}/upload`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${supervisorToken}` },
+      body: formForbidden,
+    });
+    assert.equal(resForbidden.status, 403);
   });
 });

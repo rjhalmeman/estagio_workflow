@@ -3,12 +3,13 @@
   flex-direction: column;
   gap: var(--spacing-xs);
   width: 100%;
+  position: relative;
 }
 
 .input-label {
   font-family: var(--font-family);
   font-size: var(--font-size-sm);
-  font-weight: 400; /* Regular */
+  font-weight: 400;
   color: var(--text-primary);
 }
 
@@ -20,17 +21,17 @@
 }
 
 .input-field {
-  height: 38px; /* Altura exata sem cortar */
+  height: 38px;
   padding: 0 var(--spacing-md);
   font-family: var(--font-family);
   font-size: var(--font-size-sm);
-  font-weight: 400; /* Regular */
+  font-weight: 400;
   color: var(--text-primary);
   background-color: var(--bg-surface);
-  border: 1px solid var(--accent); /* Borda amarela padrão */
-  border-radius: 10px; /* Bordas arredondadas conforme protótipo */
+  border: 1px solid var(--accent);
+  border-radius: 10px;
   outline: none;
-  transition: border-color 0.15s ease-in-out;
+  transition: border-color var(--transition-fast), background-color var(--transition-fast), transform var(--transition-fast);
   width: 100%;
 }
 
@@ -39,11 +40,21 @@
 }
 
 .input-field:focus {
-  border: 1px solid var(--accent-hover); /* Mantém 1px quando selecionado */
+  border-color: var(--accent-hover);
+  background-color: var(--bg-surface-hover);
 }
 
-.input-field-password {
-  padding-right: 40px;
+.input-field[type="date"]::-webkit-calendar-picker-indicator {
+  opacity: 0;
+  width: 28px;
+  height: 100%;
+  cursor: pointer;
+  position: absolute;
+  right: 4px;
+}
+
+.input-field-with-icon {
+  padding-right: 38px;
 }
 
 .input-field:disabled {
@@ -51,7 +62,6 @@
   cursor: not-allowed;
 }
 
-/* Erro */
 .input-field-error {
   background-color: var(--error-bg);
   color: var(--error);
@@ -63,10 +73,12 @@
   font-size: 0.75rem;
   color: var(--error);
   font-weight: 400;
+  animation: stageFadeSlide 0.18s var(--ease-out-quart) forwards;
 }
 
-/* Toggle de Senha */
-.password-toggle-btn {
+.password-toggle-btn,
+.input-dropdown-toggle,
+.input-date-trigger {
   position: absolute;
   right: var(--spacing-sm);
   background: none;
@@ -75,12 +87,78 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--accent); /* Cor amarela do ícone */
+  color: var(--accent);
   padding: var(--spacing-xs);
-  transition: color 0.15s ease;
+  transition: color var(--transition-fast), transform var(--transition-smooth);
   outline: none;
 }
 
-.password-toggle-btn:hover {
+.password-toggle-btn:hover,
+.input-dropdown-toggle:hover,
+.input-date-trigger:hover {
   color: var(--accent-hover);
+  transform: scale(1.08);
+}
+
+.input-dropdown-open {
+  transform: rotate(180deg);
+}
+
+.input-dropdown-open:hover {
+  transform: rotate(180deg) scale(1.08);
+}
+
+.input-action-icon {
+  font-size: 19px;
+}
+
+.input-suggestions-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  z-index: 60;
+  max-height: 200px;
+  overflow-y: auto;
+  margin: 0;
+  padding: var(--spacing-xs);
+  list-style: none;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--accent);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  animation: dropdownSlideIn 0.18s var(--ease-out-quart) forwards;
+}
+
+.input-suggestion-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-md);
+  font-family: var(--font-family);
+  font-size: var(--font-size-sm);
+  font-weight: 400;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: background-color var(--transition-fast), transform var(--transition-fast);
+}
+
+.input-suggestion-item:hover,
+.input-suggestion-active {
+  background-color: var(--bg-surface-hover);
+  transform: translateX(3px);
+}
+
+.input-suggestion-selected {
+  background-color: var(--accent-subtle);
+  font-weight: 500;
+}
+
+.input-suggestion-check {
+  font-size: 16px;
+  color: var(--accent);
+  animation: checkPop 0.2s var(--ease-spring) forwards;
 }

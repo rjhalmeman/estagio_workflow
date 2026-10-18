@@ -5,9 +5,10 @@ import type { InternshipFormData } from '../../../types/internship';
 import { maskPhone } from '../../../utils/masks';
 
 interface StudentDataSectionProps {
-  data: InternshipFormData;
-  onChange: (field: keyof InternshipFormData, value: string) => void;
-  errors: Record<string, string>;
+  readonly data: InternshipFormData;
+  readonly onChange: (field: keyof InternshipFormData, value: string) => void;
+  readonly errors: Record<string, string>;
+  readonly courses?: ReadonlyArray<string>;
 }
 
 interface HeaderProps {
@@ -35,8 +36,8 @@ interface SelectorProps {
 export const StageTypeSelector: React.FC<SelectorProps> = ({ value, error, onChange }) => (
   <div className="checkbox-group-container">
     <label className="checkbox-group-label">Selecione seu tipo de estágio</label>
-    <div className="checkbox-options-row">
-      <label className="custom-radio-label">
+    <div className="checkbox-options-row" role="radiogroup" aria-label="Tipo de estágio">
+      <label className={`custom-radio-label ${value === 'obrigatorio' ? 'radio-selected' : ''}`}>
         <input
           type="radio"
           name="stageType"
@@ -44,9 +45,12 @@ export const StageTypeSelector: React.FC<SelectorProps> = ({ value, error, onCha
           onChange={() => onChange('obrigatorio')}
           className="custom-radio-input"
         />
+        <span className="material-icons custom-radio-icon">
+          {value === 'obrigatorio' ? 'radio_button_checked' : 'radio_button_unchecked'}
+        </span>
         <span>Obrigatório</span>
       </label>
-      <label className="custom-radio-label">
+      <label className={`custom-radio-label ${value === 'nao_obrigatorio' ? 'radio-selected' : ''}`}>
         <input
           type="radio"
           name="stageType"
@@ -54,6 +58,9 @@ export const StageTypeSelector: React.FC<SelectorProps> = ({ value, error, onCha
           onChange={() => onChange('nao_obrigatorio')}
           className="custom-radio-input"
         />
+        <span className="material-icons custom-radio-icon">
+          {value === 'nao_obrigatorio' ? 'radio_button_checked' : 'radio_button_unchecked'}
+        </span>
         <span>Não Obrigatório</span>
       </label>
     </div>
@@ -62,25 +69,23 @@ export const StageTypeSelector: React.FC<SelectorProps> = ({ value, error, onCha
 );
 
 interface MainFieldsProps {
-  data: InternshipFormData;
-  onChange: (field: keyof InternshipFormData, value: string) => void;
-  errors: Record<string, string>;
+  readonly data: InternshipFormData;
+  readonly onChange: (field: keyof InternshipFormData, value: string) => void;
+  readonly errors: Record<string, string>;
+  readonly courses?: ReadonlyArray<string>;
 }
 
-export const StudentMainFields: React.FC<MainFieldsProps> = ({ data, onChange, errors }) => {
-  const periodOptions = [
-    { value: '', label: 'Selecione' },
-    { value: '1', label: '1º Período' },
-    { value: '2', label: '2º Período' },
-    { value: '3', label: '3º Período' },
-    { value: '4', label: '4º Período' },
-    { value: '5', label: '5º Período' },
-    { value: '6', label: '6º Período' },
-    { value: '7', label: '7º Período' },
-    { value: '8', label: '8º Período' },
-    { value: '9', label: '9º Período' },
-    { value: '10', label: '10º Período' },
-  ];
+const PERIOD_OPTIONS = [
+  { value: '', label: 'Selecione' },
+  ...Array.from({ length: 10 }, (_, i) => ({ value: String(i + 1), label: `${i + 1}º Período` })),
+];
+
+export const StudentMainFields: React.FC<MainFieldsProps> = ({
+  data,
+  onChange,
+  errors,
+  courses = [],
+}) => {
   return (
     <div className="form-fields-grid-5">
       <Input
@@ -104,7 +109,8 @@ export const StudentMainFields: React.FC<MainFieldsProps> = ({ data, onChange, e
       <Input
         label="Nome do curso*"
         placeholder="Insira o nome do seu curso"
-        list="courses-catalog"
+        suggestions={courses}
+        onSelectSuggestion={(val) => onChange('courseName', val)}
         value={data.courseName}
         onChange={(e) => onChange('courseName', e.target.value)}
         maxLength={100}
@@ -113,7 +119,7 @@ export const StudentMainFields: React.FC<MainFieldsProps> = ({ data, onChange, e
       />
       <Select
         label="Período*"
-        options={periodOptions}
+        options={PERIOD_OPTIONS}
         value={data.periodo}
         onChange={(e) => onChange('periodo', e.target.value)}
         error={errors.periodo}
@@ -171,12 +177,21 @@ export const StudentContactFields: React.FC<ContactFieldsProps> = ({ data, onCha
   );
 };
 
-export const StudentDataSection: React.FC<StudentDataSectionProps> = ({ data, onChange, errors }) => {
+export const StudentDataSection: React.FC<StudentDataSectionProps> = ({
+  data,
+  onChange,
+  errors,
+  courses,
+}) => {
   return (
     <section className="form-section">
       <SectionHeader icon="school" title="Dados do aluno" subtitle="Preencha os dados abaixo" />
-      <StageTypeSelector value={data.stageType} error={errors.stageType} onChange={(val) => onChange('stageType', val)} />
-      <StudentMainFields data={data} onChange={onChange} errors={errors} />
+      <StageTypeSelector
+        value={data.stageType}
+        error={errors.stageType}
+        onChange={(val) => onChange('stageType', val)}
+      />
+      <StudentMainFields data={data} onChange={onChange} errors={errors} courses={courses} />
       <StudentContactFields data={data} onChange={onChange} errors={errors} />
     </section>
   );
