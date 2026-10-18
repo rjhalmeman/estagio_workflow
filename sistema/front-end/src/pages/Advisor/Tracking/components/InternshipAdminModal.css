@@ -1,0 +1,111 @@
+.admin-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.admin-modal-content {
+  background-color: var(--bg-surface);
+  color: var(--text-primary);
+  width: 560px;
+  max-width: 95%;
+  border-radius: var(--border-radius);
+  padding: var(--spacing-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.admin-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.admin-modal-title {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.admin-modal-close {
+  background: none;
+  border: none;
+  color: var(--error);
+  font-size: var(--font-size-md);
+  cursor: pointer;
+  padding: var(--spacing-xs);
+}
+
+.admin-modal-error {
+  background-color: var(--error-bg);
+  color: var(--error);
+  padding: var(--spacing-sm);
+  border-radius: var(--border-radius);
+  font-size: var(--font-size-sm);
+}
+
+.admin-modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.admin-checkbox-row {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  font-size: var(--font-size-sm);
+  color: var(--text-primary);
+  cursor: pointer;
+}
+
+.admin-modal-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-md);
+}
+
+.admin-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-xs);
+}
+
+.admin-btn-cancel,
+.admin-btn-save {
+  height: 38px;
+  padding: 0 var(--spacing-lg);
+  border-radius: var(--border-radius);
+  font-family: var(--font-family);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+}
+
+.admin-btn-cancel {
+  background-color: var(--bg-element);
+  color: var(--text-primary);
+}
+
+.admin-btn-cancel:hover {
+  background-color: var(--bg-element-hover);
+}
+
+.admin-btn-save {
+  background-color: var(--accent);
+  color: var(--text-on-accent);
+}
+
+.admin-btn-save:hover {
+  background-color: var(--accent-hover);
+}

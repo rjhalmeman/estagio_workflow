@@ -9,7 +9,11 @@ export interface Stage {
   documents: Document[];
 }
 
-export const STAGE_DOCUMENT_MAP: Array<{ number: number; title: string; type: DocumentType }> = [
+export const STAGE_DOCUMENT_MAP: ReadonlyArray<{
+  readonly number: number;
+  readonly title: string;
+  readonly type: DocumentType;
+}> = [
   { number: 1, title: 'Plano de estágio', type: 'PLANO_ESTAGIO' },
   { number: 2, title: 'Parcial 1', type: 'RELATORIO_PARCIAL_1' },
   { number: 3, title: 'Parcial 2', type: 'RELATORIO_PARCIAL_2' },
@@ -20,6 +24,12 @@ export const STAGE_DOCUMENT_MAP: Array<{ number: number; title: string; type: Do
   { number: 8, title: 'Relatório final', type: 'RELATORIO_FINAL' },
   { number: 9, title: 'Síntese de avaliações', type: 'SINTESE_AVALIACOES' },
 ];
+
+const VALID_DOC_TYPES = new Set<string>(STAGE_DOCUMENT_MAP.map((s) => s.type));
+
+export function isDocumentType(val: string): val is DocumentType {
+  return VALID_DOC_TYPES.has(val);
+}
 
 export function formatDate(iso: string | undefined): string {
   if (!iso) return '--/--/----';
@@ -49,6 +59,7 @@ export function buildTrackingStages(tracking: InternshipTracking): Stage[] {
       realId: sent?.id_documento,
       name: sent ? sent.nome_arquivo : stage.title,
       status: mapDocumentStatus(sent),
+      comentario: sent?.comentario ?? null,
     };
 
     return {

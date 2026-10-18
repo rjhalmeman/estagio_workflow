@@ -8,7 +8,8 @@ export interface CustomError extends Error {
 
 function handlePrismaError(err: Prisma.PrismaClientKnownRequestError): { status: number; message: string } {
   if (err.code === 'P2002') {
-    const targets = err.meta?.target as string[] | undefined;
+    const rawTarget = err.meta?.target;
+    const targets = Array.isArray(rawTarget) ? rawTarget.map(String) : undefined;
     const targetFields = targets ? targets.join(', ') : 'campo único';
     
     if (targetFields.includes('ra')) {
@@ -39,7 +40,10 @@ export function errorHandler(
 
   if (message.includes('datas_validas')) {
     status = 400;
-    message = 'A data de término do estágio não pode ser anterior à data de início.';
+    message = 'A data de término do estágio deve ser posterior à data de início.';
+  } else if (message.includes('horario_valido')) {
+    status = 400;
+    message = 'O horário de saída deve ser posterior ao horário de entrada.';
   } else if (err instanceof Prisma.PrismaClientKnownRequestError) {
     const prismaErr = handlePrismaError(err);
     status = prismaErr.status;

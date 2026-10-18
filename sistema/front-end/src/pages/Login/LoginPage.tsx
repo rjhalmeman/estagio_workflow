@@ -38,7 +38,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
   };
 
   return (
-    <div className="login-container-page theme-light">
+    <div className="login-container-page">
       <div className="login-left-panel" />
       <div className="login-right-panel">
         <div className="login-card-content">

@@ -5,10 +5,11 @@ import internshipRoutes from './internshipRoutes';
 import documentRoutes from './documentRoutes';
 import advisorRoutes from './advisorRoutes';
 import studentRoutes from './studentRoutes';
+import catalogRoutes from './catalogRoutes';
 
 const router = Router();
 
-router.get('/health', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+router.get('/health', async (_req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const isDbConnected = await testDbConnection();
     res.status(200).json({
@@ -26,5 +27,6 @@ router.use('/internships', internshipRoutes);
 router.use('/documents', documentRoutes);
 router.use('/advisors', advisorRoutes);
 router.use('/students', studentRoutes);
+router.use('/catalog', catalogRoutes);
 
 export default router;

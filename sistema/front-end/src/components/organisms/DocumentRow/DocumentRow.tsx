@@ -1,19 +1,20 @@
 import React, { useRef } from 'react';
 
 export interface Document {
-  id: string;
+  readonly id: string;
   /** id real do documento no banco (`id_documento`) — só existe quando o documento já foi enviado. */
-  realId?: number;
-  name: string;
-  status: 'aprovado' | 'reprovado' | 'pendente' | 'enviado';
+  readonly realId?: number;
+  readonly name: string;
+  readonly status: 'aprovado' | 'reprovado' | 'pendente' | 'enviado';
+  readonly comentario?: string | null;
 }
 
 interface DocumentRowProps {
-  document: Document;
-  onUpload?: (docId: string, file: File) => void;
-  isAdvisor?: boolean;
-  onViewDocument?: (doc: Document) => void;
-  isStageActive?: boolean;
+  readonly document: Document;
+  readonly onUpload?: (docId: string, file: File) => void;
+  readonly isAdvisor?: boolean;
+  readonly onViewDocument?: (doc: Document) => void;
+  readonly isStageActive?: boolean;
 }
 
 const UploadIcon: React.FC = () => (
@@ -59,9 +60,10 @@ export const DocumentRow: React.FC<DocumentRowProps> = ({
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const canUpload = document.status === 'pendente' || document.status === 'reprovado';
+  const canView = isAdvisor && (isStageActive || Boolean(document.realId));
   const label = document.status.charAt(0).toUpperCase() + document.status.slice(1);
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const file = event.target.files?.[0];
     if (file) {
       onUpload?.(document.id, file);
@@ -94,7 +96,7 @@ export const DocumentRow: React.FC<DocumentRowProps> = ({
           </>
         )}
 
-        {isAdvisor && isStageActive && (
+        {canView && (
           <button
             className="document-view-btn"
             onClick={() => onViewDocument?.(document)}
@@ -104,6 +106,11 @@ export const DocumentRow: React.FC<DocumentRowProps> = ({
           </button>
         )}
       </div>
+      {document.comentario && (
+        <p className="document-comment" role="note">
+          Observação do orientador: {document.comentario}
+        </p>
+      )}
     </div>
   );
 };

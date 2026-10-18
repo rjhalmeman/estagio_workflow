@@ -5,21 +5,20 @@ import {
   getInternshipTracking,
   uploadDocument,
   type AuthUser,
-  type DocumentType,
   type InternshipTracking,
 } from '../../../services/api';
-import { buildTrackingStages, type Stage } from '../../../utils/documentStages';
+import { buildTrackingStages, isDocumentType, type Stage } from '../../../utils/documentStages';
 import './StudentTrackingPage.css';
 
 interface SelectedStudent {
-  name: string;
-  company: string;
+  readonly name: string;
+  readonly company: string;
 }
 
 interface StudentTrackingPageProps {
-  user: AuthUser;
-  selectedStudent: SelectedStudent | null;
-  onBack: () => void;
+  readonly user: AuthUser;
+  readonly selectedStudent: SelectedStudent | null;
+  readonly onBack: () => void;
 }
 
 export const StudentTrackingPage: React.FC<StudentTrackingPageProps> = ({ user, onBack }) => {
@@ -56,17 +55,17 @@ export const StudentTrackingPage: React.FC<StudentTrackingPageProps> = ({ user, 
     };
   }, [user.cpf]);
 
-  const toggleStage = (num: number) => {
+  const toggleStage = (num: number): void => {
     setExpanded((prev) =>
       prev.includes(num) ? prev.filter((x) => x !== num) : [...prev, num]
     );
   };
 
-  const handleUpload = async (docId: string, file: File) => {
-    if (!tracking) return;
+  const handleUpload = async (docId: string, file: File): Promise<void> => {
+    if (!tracking || !isDocumentType(docId)) return;
     setUploadingId(docId);
     try {
-      await uploadDocument(tracking.id_estagio, docId as DocumentType, file);
+      await uploadDocument(tracking.id_estagio, docId, file);
       const refreshed = await getInternshipTracking(user.cpf);
       if (refreshed) {
         setTracking(refreshed);
@@ -80,7 +79,7 @@ export const StudentTrackingPage: React.FC<StudentTrackingPageProps> = ({ user, 
   };
 
   return (
-    <div className="tracking-container-page theme-light">
+    <div className="tracking-container-page">
       <Header title="Acompanhar estágio" studentName={user.nome} onBack={onBack} />
 
       <main className="tracking-body no-scrollbar">

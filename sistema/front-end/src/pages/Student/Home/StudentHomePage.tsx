@@ -15,7 +15,7 @@ export const StudentHomePage: React.FC<StudentHomePageProps> = ({
   onLogout 
 }) => {
   return (
-    <div className="selection-container-page theme-light">
+    <div className="selection-container-page">
       <div className="selection-card">
         <div className="selection-user-info">
           <h2>Olá <span className="bold-name">{user.nome}</span></h2>

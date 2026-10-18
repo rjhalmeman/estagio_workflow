@@ -21,6 +21,7 @@ export const CompanyRow1: React.FC<RowProps> = ({ data, onChange, errors }) => (
     <Input
       label="Nome da Empresa*"
       placeholder="Insira o nome da Empresa"
+      list="companies-catalog"
       value={data.companyName}
       onChange={(e) => onChange('companyName', e.target.value)}
       maxLength={100}
@@ -30,6 +31,7 @@ export const CompanyRow1: React.FC<RowProps> = ({ data, onChange, errors }) => (
     <Input
       label="Cidade*"
       placeholder="Insira o nome da cidade"
+      list="cities-catalog"
       value={data.city}
       onChange={(e) => onChange('city', e.target.value)}
       maxLength={100}

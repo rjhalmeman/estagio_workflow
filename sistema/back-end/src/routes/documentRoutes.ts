@@ -32,7 +32,7 @@ const upload = multer({
 router.post(
   '/:internshipId/upload',
   authenticate,
-  authorize('aluno'),
+  authorize('aluno', 'supervisor'),
   upload.single('file'),
   uploadDoc
 );

@@ -1,8 +1,34 @@
 import { Request, Response, NextFunction } from 'express';
-import { registerInternship, getStudentInternshipTracking, updateInternship } from '../services/internshipService';
+import {
+  registerInternship,
+  getStudentInternshipTracking,
+  updateInternship,
+  listAllInternships,
+  listInternshipsForExternalRole,
+} from '../services/internshipService';
+import {
+  canStudentRegisterWithEmail,
+  canUserEditInternship,
+  canUserViewStudentTracking,
+} from '../services/authorizationService';
 
-export async function createInternship(req: Request, res: Response, next: NextFunction): Promise<void> {
+export async function createInternship(
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> {
   try {
+    const userCpf = req.user?.cpf || '';
+    const userRole = req.user?.role || '';
+    const allowed = await canStudentRegisterWithEmail(userCpf, userRole, String(req.body?.email || ''));
+    if (!allowed) {
+      res.status(403).json({
+        status: 'error',
+        message: 'Você só tem permissão para cadastrar estágio para sua própria conta.',
+      });
+      return;
+    }
+
     const result = await registerInternship(req.body);
     res.status(201).json({
       status: 'success',
@@ -14,24 +40,55 @@ export async function createInternship(req: Request, res: Response, next: NextFu
   }
 }
 
+export async function listInternshipsController(
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> {
+  try {
+    const rawCurso = req.query.idCurso;
+    const parsedCurso = typeof rawCurso === 'string' ? parseInt(rawCurso, 10) : NaN;
+    const idCurso = Number.isNaN(parsedCurso) ? undefined : parsedCurso;
+    const data = await listAllInternships(idCurso);
+    res.status(200).json({ status: 'success', data });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function listExternalInternshipsController(
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> {
+  try {
+    const cpf = req.user?.cpf || '';
+    const role = req.user?.role || '';
+    const data = await listInternshipsForExternalRole(cpf, role);
+    res.status(200).json({ status: 'success', data });
+  } catch (error) {
+    next(error);
+  }
+}
+
 export async function getTracking(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
     const rawCpf = req.params.cpf;
-    const cpf = Array.isArray(rawCpf) ? rawCpf[0] : rawCpf;
-    const cleanCpf = cpf || '';
-
+    const cleanCpf = (Array.isArray(rawCpf) ? rawCpf[0] : rawCpf) || '';
     if (cleanCpf.length !== 11) {
-      res.status(400).json({
-        status: 'error',
-        message: 'CPF inválido.',
-      });
+      res.status(400).json({ status: 'error', message: 'CPF inválido.' });
       return;
     }
 
-    if (req.user?.role === 'aluno' && req.user.cpf !== cleanCpf) {
+    const allowed = await canUserViewStudentTracking(
+      req.user?.cpf || '',
+      req.user?.role || '',
+      cleanCpf
+    );
+    if (!allowed) {
       res.status(403).json({
         status: 'error',
-        message: 'Você só pode acompanhar o próprio estágio.',
+        message: 'Sem permissão para visualizar o acompanhamento deste estágio.',
       });
       return;
     }
@@ -44,24 +101,31 @@ export async function getTracking(req: Request, res: Response, next: NextFunctio
       });
       return;
     }
-
-    res.status(200).json({
-      status: 'success',
-      data,
-    });
+    res.status(200).json({ status: 'success', data });
   } catch (error) {
     next(error);
   }
 }
 
-export async function updateInternshipController(req: Request, res: Response, next: NextFunction): Promise<void> {
+export async function updateInternshipController(
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> {
   try {
     const rawId = req.params.id;
-    const cleanId = Array.isArray(rawId) ? rawId[0] : rawId;
-    const id = parseInt(cleanId || '', 10);
-
-    if (isNaN(id)) {
+    const id = parseInt((Array.isArray(rawId) ? rawId[0] : rawId) || '', 10);
+    if (Number.isNaN(id)) {
       res.status(400).json({ status: 'error', message: 'ID de estágio inválido.' });
+      return;
+    }
+
+    const allowed = await canUserEditInternship(id, req.user?.cpf || '', req.user?.role || '');
+    if (!allowed) {
+      res.status(403).json({
+        status: 'error',
+        message: 'Você não tem permissão para editar este estágio.',
+      });
       return;
     }
 

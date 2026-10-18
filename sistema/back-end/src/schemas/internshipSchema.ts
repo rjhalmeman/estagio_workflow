@@ -1,11 +1,24 @@
 import { z } from 'zod';
 
-const scheduleDaySchema = z.object({
-  start1: z.string().default(''),
-  end1: z.string().default(''),
-  start2: z.string().default(''),
-  end2: z.string().default(''),
-});
+const TIME_REGEX = /^([01]\d|2[0-3]):[0-5]\d$/;
+
+function isShiftValid(start: string, end: string): boolean {
+  if (!start && !end) return true;
+  if (!start || !end) return false;
+  if (!TIME_REGEX.test(start) || !TIME_REGEX.test(end)) return false;
+  return end > start;
+}
+
+const scheduleDaySchema = z
+  .object({
+    start1: z.string().default(''),
+    end1: z.string().default(''),
+    start2: z.string().default(''),
+    end2: z.string().default(''),
+  })
+  .refine((d) => isShiftValid(d.start1, d.end1) && isShiftValid(d.start2, d.end2), {
+    message: 'Horário inválido: informe início e fim válidos (HH:MM) com saída após a entrada.',
+  });
 
 export const scheduleSchema = z.object({
   segunda: scheduleDaySchema,
@@ -16,37 +29,48 @@ export const scheduleSchema = z.object({
   sabado: scheduleDaySchema,
 });
 
-export const createInternshipSchema = z.object({
-  stageType: z.enum(['obrigatorio', 'nao_obrigatorio']),
-  studentName: z.string().min(1, 'Nome do aluno é obrigatório.'),
-  matricula: z.string().min(1, 'Matrícula é obrigatória.'),
-  courseName: z.string().min(1, 'Nome do curso é obrigatório.'),
-  periodo: z.string().min(1, 'Período é obrigatório.'),
-  ano: z.string().optional(),
-  email: z.string().email('E-mail do aluno inválido.').min(1, 'E-mail do aluno é obrigatório.'),
-  phone: z.string().min(1, 'Telefone do aluno é obrigatório.'),
-  cellphone: z.string().optional(),
+export const createInternshipSchema = z
+  .object({
+    stageType: z.enum(['obrigatorio', 'nao_obrigatorio']),
+    studentName: z.string().min(1, 'Nome do aluno é obrigatório.'),
+    matricula: z.string().min(1, 'Matrícula é obrigatória.'),
+    courseName: z.string().min(1, 'Nome do curso é obrigatório.'),
+    periodo: z.string().min(1, 'Período é obrigatório.'),
+    ano: z.string().optional(),
+    email: z.string().email('E-mail do aluno inválido.').min(1, 'E-mail do aluno é obrigatório.'),
+    phone: z.string().min(1, 'Telefone do aluno é obrigatório.'),
+    cellphone: z.string().optional(),
 
-  schedule: scheduleSchema,
+    schedule: scheduleSchema,
 
-  companyName: z.string().min(1, 'Nome da empresa é obrigatório.'),
-  city: z.string().min(1, 'Cidade é obrigatória.'),
-  role: z.string().min(1, 'Cargo é obrigatório.'),
-  sector: z.string().optional(),
-  supervisorName: z.string().min(1, 'Nome do supervisor é obrigatório.'),
-  startDate: z.string().min(1, 'Data de início é obrigatória.'),
-  endDate: z.string().optional(),
-  companyPhone: z.string().min(1, 'Telefone da empresa é obrigatório.'),
-  companyCellphone: z.string().optional(),
-  companyEmail: z.string().email('E-mail da empresa inválido.').min(1, 'E-mail da empresa é obrigatório.'),
-  weeklyHours: z.string().min(1, 'Carga horária semanal é obrigatória.'),
-  totalHours: z.string().min(1, 'Carga horária total é obrigatória.'),
+    companyName: z.string().min(1, 'Nome da empresa é obrigatório.'),
+    city: z.string().min(1, 'Cidade é obrigatória.'),
+    role: z.string().min(1, 'Cargo é obrigatório.'),
+    sector: z.string().optional(),
+    supervisorName: z.string().min(1, 'Nome do supervisor é obrigatório.'),
+    startDate: z.string().min(1, 'Data de início é obrigatória.'),
+    endDate: z.string().optional(),
+    companyPhone: z.string().min(1, 'Telefone da empresa é obrigatório.'),
+    companyCellphone: z.string().optional(),
+    companyEmail: z
+      .string()
+      .email('E-mail da empresa inválido.')
+      .min(1, 'E-mail da empresa é obrigatório.'),
+    weeklyHours: z.string().min(1, 'Carga horária semanal é obrigatória.'),
+    totalHours: z.string().min(1, 'Carga horária total é obrigatória.'),
 
-  professorName: z.string().min(1, 'Nome do professor é obrigatório.'),
-  department: z.string().optional(),
-  professorEmail: z.string().email('E-mail do professor inválido.').min(1, 'E-mail do professor é obrigatório.'),
-  ramal: z.string().optional(),
-});
+    professorName: z.string().min(1, 'Nome do professor é obrigatório.'),
+    department: z.string().optional(),
+    professorEmail: z
+      .string()
+      .email('E-mail do professor inválido.')
+      .min(1, 'E-mail do professor é obrigatório.'),
+    ramal: z.string().optional(),
+  })
+  .refine((data) => !data.endDate || new Date(data.endDate) > new Date(data.startDate), {
+    message: 'A data de término deve ser posterior à data de início.',
+    path: ['endDate'],
+  });
 
 export type CreateInternshipInput = z.infer<typeof createInternshipSchema>;
 

@@ -1,16 +1,49 @@
 import { Request, Response, NextFunction } from 'express';
-import { getUnassignedStudents, setStudentAdvisor } from '../services/studentService';
+import {
+  getAllStudents,
+  getUnassignedStudents,
+  setStudentAdvisor,
+} from '../services/studentService';
 
-export async function listUnassignedStudents(req: Request, res: Response, next: NextFunction): Promise<void> {
+function parseCourseFilter(rawCurso: unknown): number | undefined {
+  if (typeof rawCurso !== 'string' || !rawCurso.trim()) return undefined;
+  const parsed = parseInt(rawCurso, 10);
+  return Number.isNaN(parsed) ? undefined : parsed;
+}
+
+export async function listAllStudents(
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> {
   try {
-    const data = await getUnassignedStudents();
+    const idCurso = parseCourseFilter(req.query.idCurso);
+    const data = await getAllStudents(idCurso);
     res.status(200).json({ status: 'success', data });
   } catch (error) {
     next(error);
   }
 }
 
-export async function updateStudentAdvisor(req: Request, res: Response, next: NextFunction): Promise<void> {
+export async function listUnassignedStudents(
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> {
+  try {
+    const idCurso = parseCourseFilter(req.query.idCurso);
+    const data = await getUnassignedStudents(idCurso);
+    res.status(200).json({ status: 'success', data });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function updateStudentAdvisor(
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> {
   try {
     const rawCpf = req.params.cpf;
     const cpf = Array.isArray(rawCpf) ? rawCpf[0] : rawCpf;

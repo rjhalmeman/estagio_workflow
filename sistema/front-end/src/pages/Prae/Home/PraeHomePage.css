@@ -57,12 +57,26 @@
   color: #121212 !important;
 }
 
-/* Campo de Busca */
+/* Campo de Busca e Filtro */
+.prae-filters-row {
+  display: flex;
+  gap: var(--spacing-md);
+  width: 100%;
+  align-items: flex-end;
+}
+
 .prae-search-section {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-xs);
-  width: 100%;
+  flex: 1;
+}
+
+.prae-course-filter {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  min-width: 220px;
 }
 
 .prae-search-label {

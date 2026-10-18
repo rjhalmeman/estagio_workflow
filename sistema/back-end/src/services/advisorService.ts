@@ -1,7 +1,7 @@
 import { prisma } from '../config/db';
 import { PESSOA_SAFE_SELECT } from '../utils/prismaSelects';
 
-export async function getAdvisors(): Promise<any> {
+export async function getAdvisors(): Promise<unknown> {
   return prisma.professor_orientador.findMany({
     include: {
       pessoa: { select: PESSOA_SAFE_SELECT },
@@ -10,7 +10,7 @@ export async function getAdvisors(): Promise<any> {
   });
 }
 
-export async function getStudentsByAdvisor(cpfOrientador: string): Promise<any> {
+export async function getStudentsByAdvisor(cpfOrientador: string): Promise<unknown> {
   return prisma.aluno.findMany({
     where: { cpf_orientador: cpfOrientador },
     include: {

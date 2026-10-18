@@ -1,72 +1,35 @@
-import { useState } from 'react';
-import { LoginPage } from './pages/Login/LoginPage';
-import { InternshipFormPage } from './pages/InternshipForm/InternshipFormPage';
-import { StudentHomePage } from './pages/Student/Home/StudentHomePage';
-import { StudentTrackingPage } from './pages/Student/Tracking/StudentTrackingPage';
-import { AdvisorHomePage } from './pages/Advisor/Home/AdvisorHomePage';
-import { AdvisorTrackingPage } from './pages/Advisor/Tracking/AdvisorTrackingPage';
-import { PraeHomePage } from './pages/Prae/Home/PraeHomePage';
-import { PraeAdvisorStudentsPage } from './pages/Prae/AdvisorStudents/PraeAdvisorStudentsPage';
-import { PraeAddStudentsPage } from './pages/Prae/AddStudents/PraeAddStudentsPage';
-import { logoutUser, type AuthUser } from './services/api';
+import React, { Suspense } from 'react';
+import { AppProvider, useAppContext } from './store/AppContext';
 
-interface SelectedStudent {
-  cpf?: string;
-  name: string;
-  company: string;
-}
+const LoginPage = React.lazy(() => import('./pages/Login/LoginPage'));
+const InternshipFormPage = React.lazy(() => import('./pages/InternshipForm/InternshipFormPage'));
+const StudentHomePage = React.lazy(() => import('./pages/Student/Home/StudentHomePage'));
+const StudentTrackingPage = React.lazy(() => import('./pages/Student/Tracking/StudentTrackingPage'));
+const AdvisorHomePage = React.lazy(() => import('./pages/Advisor/Home/AdvisorHomePage'));
+const AdvisorTrackingPage = React.lazy(() => import('./pages/Advisor/Tracking/AdvisorTrackingPage'));
+const PraeHomePage = React.lazy(() => import('./pages/Prae/Home/PraeHomePage'));
+const PraeAdvisorStudentsPage = React.lazy(
+  () => import('./pages/Prae/AdvisorStudents/PraeAdvisorStudentsPage')
+);
+const PraeAddStudentsPage = React.lazy(() => import('./pages/Prae/AddStudents/PraeAddStudentsPage'));
+const ExternalHomePage = React.lazy(() => import('./pages/External/Home/ExternalHomePage'));
 
-interface SelectedAdvisor {
-  id: string;
-  name: string;
-}
+const AppRouter: React.FC = () => {
+  const state = useAppContext();
 
-const useAppState = () => {
-  const [user, setUser] = useState<AuthUser | null>(null);
-  const [option, setOption] = useState<'acompanhar' | 'cadastrar' | 'adicionar-alunos' | null>(null);
-  const [selectedStudent, setSelectedStudent] = useState<SelectedStudent | null>(null);
-  const [selectedAdvisor, setSelectedAdvisor] = useState<SelectedAdvisor | null>(null);
-
-  const login = (userData: AuthUser) => setUser(userData);
-  const select = (opt: 'acompanhar' | 'cadastrar' | 'adicionar-alunos') => setOption(opt);
-  const back = () => {
-    setOption(null);
-    setSelectedStudent(null);
-  };
-  const logout = () => {
-    logoutUser();
-    setUser(null);
-    setOption(null);
-    setSelectedStudent(null);
-    setSelectedAdvisor(null);
-  };
-
-  return {
-    user,
-    option,
-    selectedStudent,
-    selectedAdvisor,
-    setSelectedStudent,
-    setSelectedAdvisor,
-    login,
-    select,
-    back,
-    logout,
-  };
-};
-
-function App() {
-  const state = useAppState();
+  if (state.initializing) {
+    return <div className="page-body">Carregando sessão...</div>;
+  }
 
   if (!state.user) {
     return <LoginPage onLogin={state.login} />;
   }
 
-  if (state.option === 'adicionar-alunos') {
+  if (state.option === 'adicionar-alunos' && state.selectedAdvisor) {
     return (
       <PraeAddStudentsPage
         user={state.user}
-        advisor={state.selectedAdvisor!}
+        advisor={state.selectedAdvisor}
         onBack={state.back}
         onConfirm={state.back}
       />
@@ -82,8 +45,8 @@ function App() {
             advisor={state.selectedAdvisor}
             onBack={() => state.setSelectedAdvisor(null)}
             onSelectStudent={state.setSelectedStudent}
-            onSelectOption={state.select}
-            onNavigateToAdd={() => state.select('adicionar-alunos')}
+            onSelectOption={state.selectOption}
+            onNavigateToAdd={() => state.selectOption('adicionar-alunos')}
           />
         );
       }
@@ -92,7 +55,7 @@ function App() {
         <PraeHomePage
           user={state.user}
           onLogout={state.logout}
-          onSelectOption={state.select}
+          onSelectOption={state.selectOption}
           onSelectAdvisor={state.setSelectedAdvisor}
           onSelectStudent={state.setSelectedStudent}
         />
@@ -103,9 +66,24 @@ function App() {
       return (
         <AdvisorHomePage
           user={state.user}
-          onSelectOption={state.select}
+          onSelectOption={state.selectOption}
           onLogout={state.logout}
           onSelectStudent={state.setSelectedStudent}
+        />
+      );
+    }
+
+    if (
+      state.user.role === 'supervisor' ||
+      state.user.role === 'representante_uce' ||
+      state.user.role === 'visitante'
+    ) {
+      return (
+        <ExternalHomePage
+          user={state.user}
+          onLogout={state.logout}
+          onSelectStudent={state.setSelectedStudent}
+          onSelectOption={state.selectOption}
         />
       );
     }
@@ -113,7 +91,7 @@ function App() {
     return (
       <StudentHomePage
         user={state.user}
-        onSelectOption={state.select}
+        onSelectOption={state.selectOption}
         onLogout={state.logout}
       />
     );
@@ -140,6 +118,16 @@ function App() {
       advisorName={state.selectedAdvisor?.name}
       onBack={state.back}
     />
+  );
+};
+
+function App(): React.ReactElement {
+  return (
+    <AppProvider>
+      <Suspense fallback={<div className="page-body">Carregando...</div>}>
+        <AppRouter />
+      </Suspense>
+    </AppProvider>
   );
 }
 

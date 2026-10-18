@@ -1,11 +1,12 @@
 import React from 'react';
+import { useAppContext } from '../../../store/AppContext';
 import './Header.css';
 
 interface HeaderProps {
-  title: string;
-  studentName: string;
-  onBack?: () => void;
-  showBack?: boolean;
+  readonly title: string;
+  readonly studentName: string;
+  readonly onBack?: () => void;
+  readonly showBack?: boolean;
 }
 
 const BackIcon: React.FC = () => (
@@ -25,6 +26,8 @@ const BackIcon: React.FC = () => (
 );
 
 export const Header: React.FC<HeaderProps> = ({ title, studentName, onBack, showBack = true }) => {
+  const { theme, toggleTheme, systemOnline } = useAppContext();
+
   return (
     <header className="app-header">
       <div className="app-header-left">
@@ -47,6 +50,22 @@ export const Header: React.FC<HeaderProps> = ({ title, studentName, onBack, show
       </div>
       
       <div className="app-header-right">
+        {systemOnline !== null && (
+          <span
+            className={`app-header-status ${systemOnline ? 'status-online' : 'status-offline'}`}
+            title={systemOnline ? 'Servidor conectado' : 'Servidor indisponível'}
+          >
+            {systemOnline ? '● Online' : '● Offline'}
+          </span>
+        )}
+        <button
+          type="button"
+          className="app-header-theme-btn"
+          onClick={toggleTheme}
+          aria-label="Alternar tema claro ou escuro"
+        >
+          {theme === 'dark' ? '☀ Claro' : '☾ Escuro'}
+        </button>
         <span className="app-header-username">{studentName}</span>
       </div>
     </header>

@@ -1,6 +1,7 @@
 .student-info-container {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: var(--spacing-xl);
   margin-bottom: var(--spacing-xl);
 }
@@ -13,7 +14,7 @@
 
 .student-name {
   font-size: 1.5rem;
-  font-weight: 600; /* semi-bold */
+  font-weight: 600;
   color: var(--text-primary);
   line-height: 1.2;
 }
@@ -48,6 +49,28 @@
 .advisor-info-name {
   font-size: var(--font-size-sm);
   color: var(--text-primary);
-  font-weight: 600; /* semi-bold */
+  font-weight: 600;
   line-height: 1.4;
+}
+
+.student-info-actions {
+  margin-left: auto;
+}
+
+.student-admin-edit-btn {
+  height: 38px;
+  padding: 0 var(--spacing-lg);
+  background-color: var(--accent);
+  color: var(--text-on-accent);
+  border: none;
+  border-radius: var(--border-radius);
+  font-family: var(--font-family);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.student-admin-edit-btn:hover {
+  background-color: var(--accent-hover);
 }

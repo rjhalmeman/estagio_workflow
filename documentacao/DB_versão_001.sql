@@ -65,7 +65,9 @@ CREATE TABLE aluno (
     cpf         CHAR(11)     PRIMARY KEY
                              REFERENCES pessoa(cpf) ON DELETE RESTRICT,
     ra          VARCHAR(20)  NOT NULL UNIQUE,
-    id_curso    INT          NOT NULL REFERENCES curso(id_curso)
+    id_curso    INT          NOT NULL REFERENCES curso(id_curso),
+    periodo     INT,
+    ano         INT
 );
 COMMENT ON TABLE aluno IS
   'Relação 1:1 com pessoa via CPF. RA é identificador acadêmico único.';
@@ -190,10 +192,11 @@ CREATE TABLE plano_horario (
     dia_semana      VARCHAR(15) NOT NULL
                     CHECK (dia_semana IN
                       ('SEGUNDA','TERCA','QUARTA','QUINTA','SEXTA','SABADO')),
+    turno           INT         NOT NULL DEFAULT 1,
     hora_inicio     TIME        NOT NULL,
     hora_fim        TIME        NOT NULL,
 
-    PRIMARY KEY (id_plano, dia_semana),
+    PRIMARY KEY (id_plano, dia_semana, turno),
     CONSTRAINT horario_valido CHECK (hora_fim > hora_inicio)
 );
 COMMENT ON TABLE plano_horario IS

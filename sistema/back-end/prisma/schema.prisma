@@ -10,6 +10,8 @@ model aluno {
   cpf                  String                @id @db.Char(11)
   ra                   String                @unique @db.VarChar(20)
   id_curso             Int
+  periodo              Int?
+  ano                  Int?
   cpf_orientador       String?               @db.Char(11)
   pessoa               pessoa                @relation(fields: [cpf], references: [cpf], onUpdate: NoAction)
   curso                curso                 @relation(fields: [id_curso], references: [id_curso], onDelete: NoAction, onUpdate: NoAction)
@@ -117,11 +119,12 @@ model plano_estagio {
 model plano_horario {
   id_plano      Int
   dia_semana    String        @db.VarChar(15)
+  turno         Int           @default(1)
   hora_inicio   DateTime      @db.Time(6)
   hora_fim      DateTime      @db.Time(6)
   plano_estagio plano_estagio @relation(fields: [id_plano], references: [id_plano], onDelete: Cascade, onUpdate: NoAction)
 
-  @@id([id_plano, dia_semana])
+  @@id([id_plano, dia_semana, turno])
 }
 
 model professor_orientador {

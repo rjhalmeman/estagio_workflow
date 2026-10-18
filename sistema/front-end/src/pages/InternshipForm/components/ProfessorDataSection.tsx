@@ -4,11 +4,16 @@ import { SectionHeader } from './StudentDataSection';
 import type { InternshipFormData } from '../../../types/internship';
 
 interface ProfessorDataSectionProps {
-  data: InternshipFormData;
-  onChange: (field: keyof InternshipFormData, value: string) => void;
+  readonly data: InternshipFormData;
+  readonly onChange: (field: keyof InternshipFormData, value: string) => void;
+  readonly errors?: Record<string, string>;
 }
 
-export const ProfessorDataSection: React.FC<ProfessorDataSectionProps> = ({ data, onChange }) => {
+export const ProfessorDataSection: React.FC<ProfessorDataSectionProps> = ({
+  data,
+  onChange,
+  errors = {},
+}) => {
   return (
     <section className="form-section">
       <SectionHeader icon="person" title="Dados do Professor" subtitle="Preencha os dados abaixo" />
@@ -16,8 +21,10 @@ export const ProfessorDataSection: React.FC<ProfessorDataSectionProps> = ({ data
         <Input
           label="Nome do Professor"
           placeholder="Insira o nome do Professor"
+          list="advisors-catalog"
           value={data.professorName}
           onChange={(e) => onChange('professorName', e.target.value)}
+          error={errors.professorName}
           maxLength={100}
         />
         <Input
@@ -33,6 +40,7 @@ export const ProfessorDataSection: React.FC<ProfessorDataSectionProps> = ({ data
           placeholder="Insira o email do Professor"
           value={data.professorEmail}
           onChange={(e) => onChange('professorEmail', e.target.value)}
+          error={errors.professorEmail}
           maxLength={100}
         />
         <Input

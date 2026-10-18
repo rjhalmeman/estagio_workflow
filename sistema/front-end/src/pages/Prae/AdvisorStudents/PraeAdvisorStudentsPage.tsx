@@ -97,7 +97,7 @@ export const PraeAdvisorStudentsPage: React.FC<PraeAdvisorStudentsPageProps> = (
   };
 
   return (
-    <div className="prae-students-page theme-light">
+    <div className="prae-students-page">
       <Header title={advisor.name} studentName={user.nome} onBack={onBack} />
 
       <main className="prae-students-body no-scrollbar">

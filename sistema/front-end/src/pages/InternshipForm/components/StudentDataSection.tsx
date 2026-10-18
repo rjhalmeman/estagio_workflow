@@ -104,6 +104,7 @@ export const StudentMainFields: React.FC<MainFieldsProps> = ({ data, onChange, e
       <Input
         label="Nome do curso*"
         placeholder="Insira o nome do seu curso"
+        list="courses-catalog"
         value={data.courseName}
         onChange={(e) => onChange('courseName', e.target.value)}
         maxLength={100}

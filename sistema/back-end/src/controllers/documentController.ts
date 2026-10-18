@@ -1,32 +1,51 @@
 import { Request, Response, NextFunction } from 'express';
 import { uploadDocument, downloadDocument, updateDocumentStatus } from '../services/documentService';
 import { documentTypeSchema } from '../schemas/documentSchema';
+import {
+  canUserDownloadDocument,
+  canUserEvaluateDocument,
+  canUserUploadDocument,
+} from '../services/authorizationService';
 
 export async function uploadDoc(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
     const rawId = req.params.internshipId;
-    const cleanId = Array.isArray(rawId) ? rawId[0] : rawId;
-    const internshipId = parseInt(cleanId || '', 10);
-
+    const internshipId = parseInt((Array.isArray(rawId) ? rawId[0] : rawId) || '', 10);
     if (isNaN(internshipId)) {
       res.status(400).json({ status: 'error', message: 'ID de estágio inválido.' });
       return;
     }
 
-    const { documentType } = req.body;
-    const docTypeParsed = documentTypeSchema.safeParse(documentType);
+    const docTypeParsed = documentTypeSchema.safeParse(req.body.documentType);
     if (!docTypeParsed.success) {
       res.status(400).json({ status: 'error', message: 'Tipo de documento inválido.' });
       return;
     }
-
     if (!req.file) {
       res.status(400).json({ status: 'error', message: 'Nenhum arquivo enviado.' });
       return;
     }
 
-    const fileContent = new Uint8Array(req.file.buffer);
-    await uploadDocument(internshipId, docTypeParsed.data, req.file.originalname, fileContent);
+    const allowed = await canUserUploadDocument(
+      internshipId,
+      docTypeParsed.data,
+      req.user?.cpf || '',
+      req.user?.role || ''
+    );
+    if (!allowed) {
+      res.status(403).json({
+        status: 'error',
+        message: 'Sem permissão para enviar este documento neste estágio.',
+      });
+      return;
+    }
+
+    await uploadDocument(
+      internshipId,
+      docTypeParsed.data,
+      req.file.originalname,
+      new Uint8Array(req.file.buffer)
+    );
     res.status(200).json({ status: 'success', message: 'Documento enviado com sucesso!' });
   } catch (error) {
     next(error);
@@ -36,11 +55,22 @@ export async function uploadDoc(req: Request, res: Response, next: NextFunction)
 export async function downloadDoc(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
     const rawId = req.params.documentId;
-    const cleanId = Array.isArray(rawId) ? rawId[0] : rawId;
-    const documentId = parseInt(cleanId || '', 10);
-
+    const documentId = parseInt((Array.isArray(rawId) ? rawId[0] : rawId) || '', 10);
     if (isNaN(documentId)) {
       res.status(400).json({ status: 'error', message: 'ID de documento inválido.' });
+      return;
+    }
+
+    const allowed = await canUserDownloadDocument(
+      documentId,
+      req.user?.cpf || '',
+      req.user?.role || ''
+    );
+    if (!allowed) {
+      res.status(403).json({
+        status: 'error',
+        message: 'Sem permissão para baixar este documento.',
+      });
       return;
     }
 
@@ -62,11 +92,22 @@ export async function downloadDoc(req: Request, res: Response, next: NextFunctio
 export async function updateStatus(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
     const rawId = req.params.documentId;
-    const cleanId = Array.isArray(rawId) ? rawId[0] : rawId;
-    const documentId = parseInt(cleanId || '', 10);
-
+    const documentId = parseInt((Array.isArray(rawId) ? rawId[0] : rawId) || '', 10);
     if (isNaN(documentId)) {
       res.status(400).json({ status: 'error', message: 'ID de documento inválido.' });
+      return;
+    }
+
+    const allowed = await canUserEvaluateDocument(
+      documentId,
+      req.user?.cpf || '',
+      req.user?.role || ''
+    );
+    if (!allowed) {
+      res.status(403).json({
+        status: 'error',
+        message: 'Você não tem permissão para avaliar documentos deste estágio.',
+      });
       return;
     }
 

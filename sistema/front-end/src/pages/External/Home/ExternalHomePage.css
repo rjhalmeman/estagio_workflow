@@ -1,0 +1,126 @@
+.external-home-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  width: 100vw;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  padding: var(--spacing-lg);
+}
+
+.external-card {
+  background-color: var(--bg-surface);
+  border-radius: var(--border-radius);
+  width: 520px;
+  max-width: 100%;
+  padding: var(--spacing-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.external-user-info h2 {
+  font-size: var(--font-size-lg);
+  color: var(--text-primary);
+}
+
+.external-bold-name {
+  font-weight: 600;
+}
+
+.external-user-info p,
+.external-header p {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+.external-header h3 {
+  font-size: var(--font-size-md);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.external-divider {
+  border: none;
+  border-top: 1px solid var(--bg-element);
+}
+
+.external-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.external-item-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--bg-primary);
+  border: none;
+  border-radius: var(--border-radius);
+  padding: var(--spacing-sm) var(--spacing-md);
+  text-align: left;
+  cursor: pointer;
+  color: var(--text-primary);
+}
+
+.external-item-btn:hover {
+  background-color: var(--bg-element);
+}
+
+.external-item-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.external-item-name {
+  font-size: var(--font-size-md);
+  font-weight: 600;
+}
+
+.external-item-sub {
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+}
+
+.external-item-arrow {
+  color: var(--accent);
+  font-size: var(--font-size-md);
+}
+
+.external-state {
+  text-align: center;
+  padding: var(--spacing-md);
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+}
+
+.external-error {
+  color: var(--error);
+}
+
+.external-footer {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--spacing-sm);
+}
+
+.external-logout-btn {
+  height: 38px;
+  padding: 0 var(--spacing-xl);
+  background-color: var(--bg-element);
+  color: var(--error);
+  border: none;
+  border-radius: var(--border-radius);
+  font-family: var(--font-family);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+}
+
+.external-logout-btn:hover {
+  background-color: var(--bg-element-hover);
+}

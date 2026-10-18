@@ -32,7 +32,7 @@ export const PraeAddStudentsPage: React.FC<PraeAddStudentsPageProps> = ({
   useEffect(() => {
     let cancelled = false;
 
-    getUnassignedStudents()
+    getUnassignedStudents(user.idCurso)
       .then((data) => {
         if (!cancelled) setCandidates(data);
       })
@@ -46,7 +46,7 @@ export const PraeAddStudentsPage: React.FC<PraeAddStudentsPageProps> = ({
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [user.idCurso]);
 
   const filteredCandidates = candidates.filter(
     (student) =>
@@ -54,13 +54,13 @@ export const PraeAddStudentsPage: React.FC<PraeAddStudentsPageProps> = ({
       student.ra.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const handleToggleSelect = (cpf: string) => {
+  const handleToggleSelect = (cpf: string): void => {
     setSelectedCpfs((prev) =>
       prev.includes(cpf) ? prev.filter((x) => x !== cpf) : [...prev, cpf]
     );
   };
 
-  const handleConfirm = async () => {
+  const handleConfirm = async (): Promise<void> => {
     setSubmitting(true);
     try {
       await Promise.all(selectedCpfs.map((cpf) => setStudentAdvisor(cpf, advisor.id)));
@@ -72,7 +72,7 @@ export const PraeAddStudentsPage: React.FC<PraeAddStudentsPageProps> = ({
   };
 
   return (
-    <div className="prae-add-page theme-light">
+    <div className="prae-add-page">
       <Header title="Adicionar Alunos" studentName={user.nome} onBack={onBack} />
 
       <main className="prae-add-body no-scrollbar">

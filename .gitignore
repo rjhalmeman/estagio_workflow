@@ -146,5 +146,21 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 
-# Local notes
+# Local notes & temporary directories
 sistema/TODO.md
+uploads/
+tmp/
+temp/
+
+# Database local files
+*.db
+*.db-journal
+*.sqlite
+*.sqlite3
+
+# AI / Agent directories
+.gemini/
+.agent/
+.agents/
+.claude/
+.cursor/

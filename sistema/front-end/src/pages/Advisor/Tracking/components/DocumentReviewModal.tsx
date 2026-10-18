@@ -116,7 +116,7 @@ export const DocumentReviewModal: React.FC<DocumentReviewModalProps> = ({
 
   if (document && document.id !== openDocId) {
     setOpenDocId(document.id);
-    setComment('');
+    setComment(document.comentario ?? '');
   }
 
   if (!document) return null;

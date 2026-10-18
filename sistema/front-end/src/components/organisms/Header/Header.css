@@ -80,6 +80,35 @@
   font-weight: 400;
 }
 
+.app-header-status {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.status-online {
+  color: var(--accent);
+}
+
+.status-offline {
+  color: var(--error);
+}
+
+.app-header-theme-btn {
+  height: 30px;
+  padding: 0 var(--spacing-sm);
+  background-color: var(--bg-element);
+  color: var(--text-primary);
+  border: none;
+  border-radius: var(--border-radius);
+  font-family: var(--font-family);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.app-header-theme-btn:hover {
+  background-color: var(--bg-element-hover);
+}
+
 .app-header-title-only {
   display: flex;
   align-items: center;
